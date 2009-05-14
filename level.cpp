@@ -1,9 +1,29 @@
+//
+// C++ Implementation: level
+//
+// Description: 
+//
+//
+// Author: Nick Payne <nick@kurai.co.uk>, (C) 2009
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#include <iostream>
+#include <fstream>
+
 #include "level.h"
-bool CLevel::loadDataFromFile() {
-	// line 1: level title
-	// line 2: level rect coords
-	// line n:
-	// - int - number of points in next surface
-	// - (x,y) - points of surface
-	return false;
+
+using namespace std;
+
+bool CLevel::loadDataFromFile(string file) {
+	ifstream fin(file.c_str());  // for some reason we need the wierd c_str() conversion
+	if (!fin.is_open()) {
+		return false;
+	}
+	
+	getline(fin, title);	
+
+	fin.close();
+	return true;
 }

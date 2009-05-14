@@ -4,7 +4,7 @@
 // Description: global variable / macro / function declarations
 //
 //
-// Author: Nick Payne, Tom Garbutt <dev@coolpink.net>, (C) 2008
+// Author: Nick Payne
 //
 // Copyright: See COPYING file that comes with this distribution
 //
