@@ -22,6 +22,7 @@ class CBall {
 		void move(CLevel *);
 		void render();
 		bool setColour(int, int, int);
+		void setCoords(int, int);
 
 	private:
 		float x;

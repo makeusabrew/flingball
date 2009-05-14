@@ -28,22 +28,21 @@ bool CLevel::loadDataFromFile(string file) {
 		return false;
 	}
 	
-	numPaths = 0;	// reset num paths
-	
 	getline(fin, title);	// first line is title	
 	fin >> w >> h;				// next is world max dimensions
+	fin >> startX >> startY;	// ball start coordinates
+	fin >> numPaths;
 	
-	// this needs to be a loop
-	int numPoints;
-	fin >> numPoints;
-	for (int i = 0; i < numPoints; i++) {
-		int px = 0;
-		int py = 0;
-		fin >> px >> py;
-		paths[numPaths].addPoint(px, py);
+	for (int j = 0; j < numPaths; j++) {
+		int numPoints;
+		fin >> numPoints;
+		for (int i = 0; i < numPoints; i++) {
+			int px = 0;
+			int py = 0;
+			fin >> px >> py;
+			paths[j].addPoint(px, py);
+		}
 	}
-	numPaths ++;
-	// end loop
 
 	fin.close();
 	return true;

@@ -11,6 +11,7 @@
 //
 #ifndef INC_PATH_H
 #define INC_PATH_H
+#include <SDL/SDL.h>
 #include "globals.h"
 
 class CPath {
@@ -23,6 +24,7 @@ class CPath {
 		int colour;
 		int length;	// number of points
 		Point points[100];	// each path can be up to 100 points long
+		SDL_Rect bounds;	// when we load each path, we'll cache it's min / max bounds
 };
 
 #endif

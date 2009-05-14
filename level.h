@@ -31,6 +31,8 @@ class CLevel {
 		int h;
 		int x;
 		int y;
+		int startX;
+		int startY;
 		std::string title;
 		int numPaths;
 		CPath paths[100];

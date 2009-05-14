@@ -67,3 +67,8 @@ bool CBall::setColour(int r, int g, int b) {
 	cb = b;
 	return true;
 }
+
+void CBall::setCoords(int nx, int ny) {
+	x = nx;
+	y = ny;
+}
