@@ -20,6 +20,7 @@ class CBall {
 		bool isPointInside(float px, float py);
 		void move();
 		void draw(SDL_Surface *);
+		bool setColour(int, int, int);
 
 	private:
 		float x;
@@ -29,6 +30,10 @@ class CBall {
 		float vy;
 
 		int r;
+		
+		int cr;
+		int cg;
+		int cb;
 };
 		
 #endif

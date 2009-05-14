@@ -13,6 +13,7 @@
 #include <sstream>
 #include <iostream>
 #include <SDL/SDL.h>
+#include <SDL/SDL_framerate.h>
 
 using namespace std;
 
@@ -109,8 +110,12 @@ int mainGame(int argc, char* args[]) {
 	** game loop **
 	**************/
 	SDL_Event event;
+	
+	//FPSmanager* fpsman;
+	//SDL_initFramerate(fpsman);
+	//SDL_setFramerate(fpsman, 30);
+	bool mouseDown = false;
 	while(!quit) {
-		
 		// FPS
 		startTime = SDL_GetTicks();
 		
@@ -125,6 +130,18 @@ int mainGame(int argc, char* args[]) {
 				case SDL_QUIT:
 					quit = 1;
 					break;
+					
+				case SDL_MOUSEBUTTONDOWN:
+					if (event.button.button == SDL_BUTTON_LEFT) {
+						mouseDown = true;
+					}
+					break;
+					
+				case SDL_MOUSEBUTTONUP:
+					if (event.button.button == SDL_BUTTON_LEFT) {
+						mouseDown = false;
+					}
+					break;					
 			}
 		}
 		
@@ -171,6 +188,11 @@ int mainGame(int argc, char* args[]) {
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // fill white every frame
 		
 		ball->move();
+		if (mouseDown) {
+			ball->setColour(255, 0, 0);
+		} else {
+			ball->setColour(0, 0, 0);
+		}
 		ball->draw(screen);
 		//world->renderBackground(player->getAngle());
 		//player->render(fps);  // render our view first (and render some bullets and that)
@@ -186,10 +208,12 @@ int mainGame(int argc, char* args[]) {
 		//hud->drawFPS(fps);
 		
 		SDL_Flip(screen);  // flip back buffer -> screen
-		SDL_Delay(10);
+		
+		//SDL_framerateDelay(fpsman);
 		
 		frameTime = SDL_GetTicks()-startTime;
 		fps = (frameTime>0) ? 1000 / frameTime : 0;
+		SDL_Delay(25);
 	}
 	
 	delete ball;
