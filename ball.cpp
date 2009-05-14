@@ -15,9 +15,9 @@
 CBall::CBall() {
 	// pony up
 	r = 16;
-	x = 100;
-	y = 100;
-	vx = 3;
+	x = 0;
+	y = 0;
+	vx = 0;
 	vy = 0;
 	cr = cg = cb = 0;
 }
@@ -68,7 +68,7 @@ bool CBall::setColour(int r, int g, int b) {
 	return true;
 }
 
-void CBall::setCoords(int nx, int ny) {
-	x = nx;
-	y = ny;
+void CBall::setCoords(Point p) {
+	x = p.x;
+	y = p.y;
 }

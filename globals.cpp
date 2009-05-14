@@ -78,6 +78,7 @@ int mainGame(int argc, char* args[]) {
 
 	CBall *ball;
 	ball = new CBall;
+	ball->setCoords(level->getStartPoint());
 	/**************
 	** game loop **
 	**************/

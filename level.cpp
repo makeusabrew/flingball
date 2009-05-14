@@ -74,3 +74,10 @@ void CLevel::render() {
 		paths[i].render();
 	}
 }
+
+Point CLevel::getStartPoint() {
+	Point p;
+	p.x = startX;
+	p.y = startY;
+	return p;
+}
