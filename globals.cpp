@@ -109,7 +109,9 @@ int mainGame(int argc, char* args[]) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						
 						// do some shit based on the fact the mouse has been pressed
-						ball->startFling(event.button.x, event.button.y);
+						if (ball->isPointInside(event.button.x, event.button.y)) {
+							ball->startFling(event.button.x, event.button.y);
+						}
 						
 						mouseDown = true;
 					}
@@ -117,8 +119,9 @@ int mainGame(int argc, char* args[]) {
 					
 				case SDL_MOUSEBUTTONUP:
 					if (event.button.button == SDL_BUTTON_LEFT) {
-						
-						ball->stopFling(event.button.x, event.button.y);	// launch sucker!
+						if (ball->isFlinging()) {
+							ball->stopFling(event.button.x, event.button.y);	// launch sucker!
+						}
 						mouseDown = false;
 					}
 					break;

@@ -25,7 +25,7 @@
 #define VIEWPORT_H VIEWPORT_HEIGHT
 
 #define VIEWPORT_X (SCREEN_W - VIEWPORT_W) / 2
-#define VIEWPORT_Y (SCREEN_H - VIEWPORT_H) / 2
+#define VIEWPORT_Y 20
 
 #ifndef PI
 #define PI 3.14159265
@@ -38,6 +38,9 @@ const int ENTITY_TYPE_BULLET = 3;
 
 #define RVX(x) (x + VIEWPORT_X)
 #define RVY(y) (y + VIEWPORT_Y)
+
+#define AVX(x) (x - VIEWPORT_X)
+#define AVY(y) (y - VIEWPORT_Y)
 
 // A set of very useful macros that you will find in most
 // code that I write whether I use them in a program or

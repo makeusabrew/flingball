@@ -33,7 +33,19 @@ CBall::~CBall() {
 }
 
 bool CBall::isPointInside(float px, float py) {
-	return false;
+	float x1 = x-r;
+	float y1 = y-r;
+	float x2 = x+r;
+	float y2 = y+r;
+	
+	px = AVX(px);
+	py = AVY(py);
+	
+	if (px > x1 && px < x2 && py > y1 && py < y2) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 void CBall::render() {
@@ -61,9 +73,11 @@ void CBall::move(CLevel *level) {
 
 	if (x + r > level->getRightBound()) {
 		x = level->getRightBound() - r;
+		vx *= 0.8;
 		vx = -vx;
 	} else if (x - r < level->getLeftBound()) {
 		x = level->getLeftBound() + r;
+		vx *= 0.8;
 		vx = -vx;
 	}
 	
