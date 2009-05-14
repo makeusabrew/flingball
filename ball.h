@@ -23,6 +23,12 @@ class CBall {
 		void render();
 		bool setColour(int, int, int);
 		void setCoords(Point p);
+		void startFling(int, int);
+		void stopFling(int, int);
+		
+		bool isFlinging();
+		int getFlingX();
+		int getFlingY();
 
 	private:
 		float x;
@@ -36,6 +42,10 @@ class CBall {
 		int cr;
 		int cg;
 		int cb;
+		
+		bool flinging;	// dragging a fling?
+		int fX;	// fling X
+		int fY;	// fling Y
 };
 		
 #endif

@@ -14,6 +14,7 @@
 #include <iostream>
 #include <SDL/SDL.h>
 #include <SDL/SDL_framerate.h>
+#include <SDL/SDL_gfxPrimitives.h>
 
 using namespace std;
 
@@ -86,6 +87,8 @@ int mainGame(int argc, char* args[]) {
 	
 	
 	bool mouseDown = false;
+	int mouseX = 0;
+	int mouseY = 0;
 	while(!quit) {
 		// FPS
 		startTime = SDL_GetTicks();
@@ -104,15 +107,26 @@ int mainGame(int argc, char* args[]) {
 					
 				case SDL_MOUSEBUTTONDOWN:
 					if (event.button.button == SDL_BUTTON_LEFT) {
+						
+						// do some shit based on the fact the mouse has been pressed
+						ball->startFling(event.button.x, event.button.y);
+						
 						mouseDown = true;
 					}
 					break;
 					
 				case SDL_MOUSEBUTTONUP:
 					if (event.button.button == SDL_BUTTON_LEFT) {
+						
+						ball->stopFling(event.button.x, event.button.y);	// launch sucker!
 						mouseDown = false;
 					}
-					break;					
+					break;
+								
+				case SDL_MOUSEMOTION:
+					mouseX = event.motion.x;
+					mouseY = event.motion.y;
+					break;
 			}
 		}
 		
@@ -166,6 +180,8 @@ int mainGame(int argc, char* args[]) {
 		SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255, 255, 255));	// white game area
 		
 		
+		//ball->think();	// any pre move stuff
+		
 		ball->move(level);
 		if (mouseDown) {
 			ball->setColour(255, 0, 0);
@@ -174,6 +190,13 @@ int mainGame(int argc, char* args[]) {
 		}
 		level->render();
 		ball->render();
+		if (ball->isFlinging()) {
+			int x1 = ball->getFlingX();
+			int y1 = ball->getFlingY();
+			int x2 = mouseX;
+			int y2 = mouseY;
+			lineRGBA(screen, x1, y1, x2, y2, 128, 128, 255, 255);
+		}
 		//world->renderBackground(player->getAngle());
 		//player->render(fps);  // render our view first (and render some bullets and that)
 		
