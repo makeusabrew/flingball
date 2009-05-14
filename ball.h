@@ -12,13 +12,14 @@
 #ifndef INC_BALL_H
 #define INC_BALL_H
 #include <SDL/SDL.h>
+#include "level.h"
 
 class CBall {
 	public:
 		CBall();
 		~CBall();
 		bool isPointInside(float px, float py);
-		void move();
+		void move(CLevel *);
 		void draw(SDL_Surface *);
 		bool setColour(int, int, int);
 

@@ -30,10 +30,12 @@ bool CBall::isPointInside(float px, float py) {
 }
 
 void CBall::draw(SDL_Surface *screen) {
-	circleRGBA(screen, int(x), int(y), r, cr, cg, cb, 255);
+	int dx = int(x) + VIEWPORT_X;
+	int dy = int(y) + VIEWPORT_Y;
+	circleRGBA(screen, dx, dy, r, cr, cg, cb, 255);
 }
 
-void CBall::move() {
+void CBall::move(CLevel *level) {
 	vy += 0.2;
 	if (vy > 20) {
 		vy = 20;
@@ -42,17 +44,17 @@ void CBall::move() {
 	x += vx;
 	y += vy;
 	
-	if (y + r > SCREEN_HEIGHT) {
-		y = SCREEN_HEIGHT - r;
+	if (y + r > level->getBottomBound()) {
+		y = level->getBottomBound() - r;
 		vy *= 0.8;
 		vy = -vy;
 	}
 
-	if (x + r > SCREEN_WIDTH) {
-		x = SCREEN_WIDTH - r;
+	if (x + r > level->getRightBound()) {
+		x = level->getRightBound() - r;
 		vx = -vx;
-	} else if (x - r < 0) {
-		x = 0 + r;
+	} else if (x - r < level->getLeftBound()) {
+		x = level->getLeftBound() + r;
 		vx = -vx;
 	}
 }

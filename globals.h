@@ -19,11 +19,17 @@
 #define SCREEN_H SCREEN_HEIGHT
 #define SCREEN_BPP 32
 
+#define VIEWPORT_WIDTH 640
+#define VIEWPORT_HEIGHT 480
+#define VIEWPORT_W VIEWPORT_WIDTH
+#define VIEWPORT_H VIEWPORT_HEIGHT
+
+#define VIEWPORT_X (SCREEN_W - VIEWPORT_W) / 2
+#define VIEWPORT_Y (SCREEN_H - VIEWPORT_H) / 2
+
 #ifndef PI
 #define PI 3.14159265
 #endif
-
-extern SDL_Surface *screen;
 
 const int ENTITY_TYPE_PLAYER = 0;
 const int ENTITY_TYPE_ENEMY = 1;
@@ -39,11 +45,6 @@ const int ENTITY_TYPE_BULLET = 3;
 #define abs(a) (((a)<0) ? -(a) : (a))
 #define sign(a) (((a)<0) ? -1 : (a)>0 ? 1 : 0)
 #define deg2rad(a) (a*(PI/180))
-
-void line(SDL_Surface *s,
-					int x1, int y1,
-		 int x2, int y2,
-	 Uint32 color);
 
 int mainEditor(int argc, char* args[]);
 int mainGame(int argc, char* args[]);

@@ -1,5 +1,5 @@
 A Simple Start	#title, obviously
-100	100	600	100	#start x,y and end x,y
+640 480
 # every line after this refers to a path contained within the level in the format
 # no. points, (x,y), (x, y)...
 2 150 150 150 300

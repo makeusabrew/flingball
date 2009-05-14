@@ -16,10 +16,20 @@
 
 class CLevel {
 	public:
+		CLevel();
 		bool loadDataFromFile(std::string);
 		std::string getTitle();
+		void render();
+		int getLeftBound();
+		int getRightBound();
+		int getTopBound();
+		int getBottomBound();
 	private:
 		int data;
+		int w;
+		int h;
+		int x;
+		int y;
 		std::string title;
 };
 
