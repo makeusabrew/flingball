@@ -1,5 +1,3 @@
 A Simple Start	#title, obviously
 640 480
-# every line after this refers to a path contained within the level in the format
-# no. points, (x,y), (x, y)...
-2 150 150 150 300
+4 300 480 300 200 340 200 340 480

@@ -36,6 +36,9 @@ const int ENTITY_TYPE_ENEMY = 1;
 const int ENTITY_TYPE_PICKUP = 2;
 const int ENTITY_TYPE_BULLET = 3;
 
+#define RVX(x) (x + VIEWPORT_X)
+#define RVY(y) (y + VIEWPORT_Y)
+
 // A set of very useful macros that you will find in most
 // code that I write whether I use them in a program or
 // not.
@@ -50,5 +53,13 @@ int mainEditor(int argc, char* args[]);
 int mainGame(int argc, char* args[]);
 
 bool keyPressed(SDLKey key);
+
+typedef struct{
+	int x;
+	int y;
+} Point;
+
+extern SDL_Surface *screen;
+
 
 #endif

@@ -25,6 +25,8 @@ using namespace std;
 //----------------------------------------------------------
 //----------------------------------------------------------
 
+SDL_Surface *screen;
+
 int mainEditor(int argc, char* args[]) {
 	return 0;
 }
@@ -36,7 +38,7 @@ int mainGame(int argc, char* args[]) {
 	int fps;
 	
 	int quit = 0;
-	SDL_Surface *screen;
+	
 	// SDL init
 	cout << "Starting up...(" << argc << ")" << endl;
 	cout << "Initialising SDL..." << endl;
@@ -169,7 +171,8 @@ int mainGame(int argc, char* args[]) {
 		} else {
 			ball->setColour(0, 0, 0);
 		}
-		ball->draw(screen);
+		level->render();
+		ball->render();
 		//world->renderBackground(player->getAngle());
 		//player->render(fps);  // render our view first (and render some bullets and that)
 		

@@ -13,6 +13,7 @@
 #define INC_LEVEL_H
 
 #include <string>
+#include "path.h"
 
 class CLevel {
 	public:
@@ -31,6 +32,7 @@ class CLevel {
 		int x;
 		int y;
 		std::string title;
+		int numPaths;
+		CPath paths[100];
 };
-
 #endif

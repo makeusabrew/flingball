@@ -20,7 +20,7 @@ class CBall {
 		~CBall();
 		bool isPointInside(float px, float py);
 		void move(CLevel *);
-		void draw(SDL_Surface *);
+		void render();
 		bool setColour(int, int, int);
 
 	private:
