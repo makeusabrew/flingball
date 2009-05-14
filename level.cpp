@@ -27,3 +27,7 @@ bool CLevel::loadDataFromFile(string file) {
 	fin.close();
 	return true;
 }
+
+string CLevel::getTitle() {
+	return title;
+}

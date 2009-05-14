@@ -17,6 +17,7 @@
 class CLevel {
 	public:
 		bool loadDataFromFile(std::string);
+		std::string getTitle();
 	private:
 		int data;
 		std::string title;

@@ -19,7 +19,7 @@ using namespace std;
 
 #include "globals.h"
 #include "ball.h"
-//#include "world.h"
+#include "level.h"
 //#include "player.h"
 //#include "sound.h"
 //----------------------------------------------------------
@@ -66,44 +66,14 @@ int mainGame(int argc, char* args[]) {
 	//CWorld *world;  // define the world
 	//CEvent eventhandler;
 	//eventhandler.setPlayer(player);
-/*
-	world = new CWorld;
+	
+	CLevel *level;
+	level = new CLevel;
+	
+	level->loadDataFromFile("data/maps/1.lvl");
+	
+	cout << level->getTitle() << endl;
 
-	world->setRenderingBuffer(screen);  // get a reference to the global screen
-		
-	if (!world->loadFromFile("data/maps/map1.wld")) {
-		cout << "ERROR: Could not load default map!" << endl;
-		return 1;
-	}
-	
-	// find our player
-	CPlayer* player;
-	player = world->getPlayerEntity();
-	if (player == NULL) {
-		cout << "Could not get player object" << endl;
-		SDL_Quit();
-		return 1;
-	}
-	
-	cout << "Loading world textures..." << endl;
-	world->loadTexture("data/tex2.bmp");
-	world->loadTexture("data/cp1.bmp");
-	world->loadTexture("data/cp2.bmp");
-	world->loadTexture("data/cp3.bmp");
-	world->loadSky("data/skynew.bmp");
-	
-	player->setRenderingBuffer(screen);
-	player->setSoundEngine(sound);
-	// by default we have a pistol
-	player->activateWeapon(WEAPON_SHOTGUN);
-	player->changeWeapon(WEAPON_SHOTGUN);
-
-	// get a new hud
-	CHud *hud = new CHud;
-	player->setHud(hud);
-	
-	world->spawnRandomEntities(20);
-*/
 	CBall *ball;
 	ball = new CBall;
 	/**************
@@ -111,9 +81,7 @@ int mainGame(int argc, char* args[]) {
 	**************/
 	SDL_Event event;
 	
-	//FPSmanager* fpsman;
-	//SDL_initFramerate(fpsman);
-	//SDL_setFramerate(fpsman, 30);
+	
 	bool mouseDown = false;
 	while(!quit) {
 		// FPS
@@ -217,6 +185,7 @@ int mainGame(int argc, char* args[]) {
 	}
 	
 	delete ball;
+	delete level;
 
 	cout << "Exiting..." << endl;
 	SDL_Quit();
