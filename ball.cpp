@@ -122,6 +122,8 @@ void CBall::startFling(int mx, int my) {
 	flinging = true;
 }
 
+//Ian was ear.
+
 void CBall::stopFling(int mx, int my) {
 	float dx = mx-fX;
 	float dy = my-fY;
