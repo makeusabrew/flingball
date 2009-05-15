@@ -20,11 +20,13 @@ class CPath {
 		void setColour(int);
 		bool addPoint(int, int);
 		void render();
+		bool isPolygon();
 	private:
 		int colour;
 		int length;	// number of points
 		Point points[100];	// each path can be up to 100 points long
-		SDL_Rect bounds;	// when we load each path, we'll cache it's min / max bounds
+		Point min;
+		Point max;
 };
 
 #endif

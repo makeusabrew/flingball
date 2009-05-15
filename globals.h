@@ -31,6 +31,8 @@
 #define PI 3.14159265
 #endif
 
+#define DEBUG 1
+
 const int ENTITY_TYPE_PLAYER = 0;
 const int ENTITY_TYPE_ENEMY = 1;
 const int ENTITY_TYPE_PICKUP = 2;
