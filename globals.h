@@ -64,7 +64,10 @@ typedef struct{
 	int y;
 } Point;
 
+class CCamera;
+
 extern SDL_Surface *screen;
+extern CCamera camera;
 
 
 #endif

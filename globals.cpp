@@ -21,12 +21,14 @@ using namespace std;
 #include "globals.h"
 #include "ball.h"
 #include "level.h"
+#include "camera.h"
 //#include "player.h"
 //#include "sound.h"
 //----------------------------------------------------------
 //----------------------------------------------------------
 
 SDL_Surface *screen;
+CCamera camera;
 
 int mainEditor(int argc, char* args[]) {
 	return 0;
@@ -80,6 +82,8 @@ int mainGame(int argc, char* args[]) {
 	CBall *ball;
 	ball = new CBall;
 	ball->setCoords(level->getStartPoint());
+	
+	camera.setViewport(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_W, VIEWPORT_H);
 	/**************
 	** game loop **
 	**************/
