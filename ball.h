@@ -29,6 +29,9 @@ class CBall {
 		bool isFlinging();
 		int getFlingX();
 		int getFlingY();
+		
+		int cameraX();
+		int cameraY();
 
 	private:
 		float x;

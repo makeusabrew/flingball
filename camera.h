@@ -18,6 +18,9 @@ class CCamera {
 		CCamera();
 		bool setViewport(int, int, int, int);
 		
+		bool move(int, int);
+		bool moveTo(int, int);
+		
 		int x2r(int);
 		int y2r(int);
 		

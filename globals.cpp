@@ -143,15 +143,15 @@ int mainGame(int argc, char* args[]) {
 		}
 		
 		if (keyPressed(SDLK_UP)) {
-		//	player->moveForward();
+			camera.move(0, -1);
 		} else if (keyPressed(SDLK_DOWN)) {
-		//	player->moveBackward();
+			camera.move(0, 1);
 		}
 		
 		if (keyPressed(SDLK_LEFT)) {
-		//	player->turnLeft();
+			camera.move(-1, 0);
 		} else if (keyPressed(SDLK_RIGHT)) {
-		//	player->turnRight();
+			camera.move(1, 0);
 		}
 		
 		if (keyPressed(SDLK_a)) {
@@ -174,17 +174,16 @@ int mainGame(int argc, char* args[]) {
 		
 		//world->doEntityThinks();
 			
-		/********************
-		** rendering stuff **
-		********************/
-		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));  // black layer
 		
+		
+		/*
 		SDL_Rect rect;
 		rect.x = VIEWPORT_X;
 		rect.y = VIEWPORT_Y;
 		rect.w = VIEWPORT_W;
 		rect.h = VIEWPORT_H;
 		SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255, 255, 255));	// white game area
+		*/
 		
 		
 		//ball->think();	// any pre move stuff
@@ -195,6 +194,28 @@ int mainGame(int argc, char* args[]) {
 		} else {
 			ball->setColour(0, 0, 0);
 		}
+		
+		if (ball->cameraX() < (VIEWPORT_X + CAMERA_MOVE_THRESHOLD)) {
+			int ox = (VIEWPORT_X + CAMERA_MOVE_THRESHOLD) - ball->cameraX();
+			camera.move(ox, 0);
+		} else if (ball->cameraX() > (VIEWPORT_W - CAMERA_MOVE_THRESHOLD)) {
+			int ox = ball->cameraX() - (VIEWPORT_W - CAMERA_MOVE_THRESHOLD);
+			camera.move(-ox, 0);
+		}
+		
+		if (ball->cameraY() < (VIEWPORT_Y + CAMERA_MOVE_THRESHOLD)) {
+			int oy = (VIEWPORT_Y + CAMERA_MOVE_THRESHOLD) - ball->cameraY();
+			camera.move(0, oy);
+		} else if (ball->cameraY() > (VIEWPORT_H - CAMERA_MOVE_THRESHOLD)) {
+			int oy = ball->cameraY() - (VIEWPORT_H - CAMERA_MOVE_THRESHOLD);
+			camera.move(0, -oy);
+		}
+		
+		/********************
+		** rendering stuff **
+		********************/
+		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
+		
 		level->render();
 		ball->render();
 		if (ball->isFlinging()) {
@@ -204,6 +225,13 @@ int mainGame(int argc, char* args[]) {
 			int y2 = mouseY;
 			lineRGBA(screen, x1, y1, x2, y2, 128, 128, 255, 255);
 		}
+		
+		SDL_Rect gui;
+		gui.x = VIEWPORT_W;
+		gui.y = VIEWPORT_Y;
+		gui.w = SCREEN_W - VIEWPORT_W;
+		gui.h = VIEWPORT_H;
+		SDL_FillRect(screen, &gui, SDL_MapRGB(screen->format, 0, 0, 0));  // black layer
 		//world->renderBackground(player->getAngle());
 		//player->render(fps);  // render our view first (and render some bullets and that)
 		

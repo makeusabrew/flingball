@@ -47,8 +47,8 @@ bool CBall::isPointInside(float px, float py) {
 }
 
 void CBall::render() {
-	int dx = camera.x2r(int(x));
-	int dy = camera.y2r(int(y));
+	int dx = this->cameraX();
+	int dy = this->cameraY();
 	circleRGBA(screen, dx, dy, r, cr, cg, cb, 255);
 }
 
@@ -150,4 +150,12 @@ int CBall::getFlingX() {
 
 int CBall::getFlingY() {
 	return fY;
+}
+
+int CBall::cameraX() {
+	return camera.x2r(int(x));
+}
+
+int CBall::cameraY() {
+	return camera.y2r(int(y));
 }

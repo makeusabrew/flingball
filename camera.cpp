@@ -23,6 +23,18 @@ bool CCamera::setViewport(int cx, int cy, int cw, int ch) {
 	return true;
 }
 
+bool CCamera::move(int mx, int my) {
+	x += mx;
+	y += my;
+	return true;
+}
+
+bool CCamera::moveTo(int nx, int ny) {
+	x = nx;
+	y = ny;
+	return true;
+}
+
 int CCamera::x2r(int ax) {
 	return ax + x;
 }

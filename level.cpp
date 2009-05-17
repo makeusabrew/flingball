@@ -11,8 +11,10 @@
 //
 #include <iostream>
 #include <fstream>
+#include <SDL/SDL_gfxPrimitives.h>
 
 #include "level.h"
+#include "camera.h"
 
 using namespace std;
 
@@ -76,6 +78,11 @@ int CLevel::getBottomBound() {
 }
 
 void CLevel::render() {
+	// need to draw four lines representing our boundaries
+	lineRGBA(screen, camera.x2r(this->getLeftBound()), camera.y2r(this->getTopBound()), camera.x2r(this->getRightBound()), camera.y2r(this->getTopBound()), 0, 0, 0, 255);
+	lineRGBA(screen, camera.x2r(this->getRightBound()), camera.y2r(this->getTopBound()), camera.x2r(this->getRightBound()), camera.y2r(this->getBottomBound()), 0, 0, 0, 255);
+	lineRGBA(screen, camera.x2r(this->getRightBound()), camera.y2r(this->getBottomBound()), camera.x2r(this->getLeftBound()), camera.y2r(this->getBottomBound()), 0, 0, 0, 255);
+	lineRGBA(screen, camera.x2r(this->getLeftBound()), camera.y2r(this->getBottomBound()), camera.x2r(this->getLeftBound()), camera.y2r(this->getTopBound()), 0, 0, 0, 255);
 	for (int i = 0; i < numPaths; i++) {
 		// just render each path
 		paths[i].render();
