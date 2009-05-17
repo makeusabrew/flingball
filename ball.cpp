@@ -67,6 +67,10 @@ void CBall::move(CLevel *level) {
 		y = level->getBottomBound() - r;
 		vy *= 0.65;
 		vy = -vy;
+	}	else if (y - r < level->getTopBound()) {
+		y = level->getTopBound() + r;
+		vy *= 0.65;
+		vy = -vy;
 	}
 
 	if (x + r > level->getRightBound()) {
