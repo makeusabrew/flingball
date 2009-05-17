@@ -27,6 +27,8 @@ class CLevel {
 		int getTopBound();
 		int getBottomBound();
 		Point getStartPoint();
+		CPath *getPaths();
+		int getNumPaths();
 	private:
 		int data;
 		int w;

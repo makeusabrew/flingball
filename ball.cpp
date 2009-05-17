@@ -100,6 +100,37 @@ void CBall::move(CLevel *level) {
 			vx += 0.005;
 		}
 	}
+	
+	
+	CPath *paths = level->getPaths();
+	int numPaths = level->getNumPaths();
+	
+#ifdef DEBUG
+	this->setColour(0, 0, 0);
+#endif
+	for (int i = 0; i < numPaths; i++) {
+		// first of all, are we making contact at all?
+		int x1 = (int)x - r;
+		int y1 = (int)y - r;
+		int x2 = (int)x + r;
+		int y2 = (int)y + r;
+		
+		Point min = paths[i].getMinPoint();
+		Point max = paths[i].getMaxPoint();
+		
+		if (!(x1 > max.x || x2 < min.x ||
+				y1 > max.y || y2 < min.y)) {
+			// we intersect with this object
+#ifdef DEBUG
+			this->setColour(0, 0, 255);
+#endif
+			// the following is completely wrong. it's just a (bad) start
+			// we need to detect which edge crossed into the path
+			// hmm. stumped
+		}
+
+	}
+	
 	if (abs(vx) < 0.1) {
 		vx = 0;
 	}
@@ -131,8 +162,8 @@ void CBall::stopFling(int mx, int my) {
 	float dy = my-fY;
 	float dist = sqrt((dx*dx) + (dy*dy));	// this is the absolute distance the mouse was dragged. work on it
 	
-	if (dist > 100) {
-		dist = 100;
+	if (dist > 150) {
+		dist = 150;
 	}
 	dist *= 0.15;
 	

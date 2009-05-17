@@ -77,3 +77,11 @@ void CPath::render() {
 		lineRGBA(screen, camera.x2r(points[i].x), camera.y2r(points[i].y), camera.x2r(points[i+1].x), camera.y2r(points[i+1].y), 0, 0, 0, 255);
 	}
 }
+
+Point CPath::getMinPoint() {
+	return min;
+}
+
+Point CPath::getMaxPoint() {
+	return max;
+}

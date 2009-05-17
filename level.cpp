@@ -95,3 +95,11 @@ Point CLevel::getStartPoint() {
 	p.y = startY;
 	return p;
 }
+
+CPath* CLevel::getPaths() {
+	return paths;
+}
+
+int CLevel::getNumPaths() {
+	return numPaths;
+}

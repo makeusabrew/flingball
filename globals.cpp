@@ -31,6 +31,102 @@ SDL_Surface *screen;
 CCamera camera;
 
 int mainEditor(int argc, char* args[]) {
+		// for fps counter
+	int startTime;
+	int frameTime;
+	int fps;
+	
+	int quit = 0;
+	
+	// SDL init
+	cout << "Starting up...(" << argc << ")" << endl;
+	cout << "Initialising SDL..." << endl;
+	if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+		printf("Unable to init SDL: %s\n", SDL_GetError());
+		return 1;
+	}
+	cout << "SDL Video init OK..." << endl;
+	atexit(SDL_Quit);
+	// screen init
+	screen = SDL_SetVideoMode(EDITOR_SCREEN_WIDTH, EDITOR_SCREEN_HEIGHT, SCREEN_BPP, SDL_HWSURFACE|SDL_DOUBLEBUF);
+	
+	if (screen == NULL) {
+		//fprintf(stderr, "Couldn't set 640x480x32 video mode: %s\n", SDL_GetError());
+		cout << "Couldn't set " << EDITOR_SCREEN_WIDTH << "x" << EDITOR_SCREEN_HEIGHT << "x" << EDITOR_SCREEN_HEIGHT << "x" << EDITOR_SCREEN_BPP << ": " << SDL_GetError() << endl;
+		return 1;
+	}
+	SDL_WM_SetCaption("Fling Ball Editor", NULL);
+	cout << "Set Video mode " << EDITOR_SCREEN_WIDTH << "x" << EDITOR_SCREEN_HEIGHT << "x" << EDITOR_SCREEN_HEIGHT << " OK" << endl;
+	
+	CLevel *level;
+	level = new CLevel;
+	
+	camera.setViewport(EDITOR_VIEWPORT_X, EDITOR_VIEWPORT_Y, EDITOR_VIEWPORT_W, EDITOR_VIEWPORT_H);
+	/**************
+	** game loop **
+	**************/
+	SDL_Event event;
+	
+	
+	int mouseX = 0;
+	int mouseY = 0;
+	while(!quit) {
+		// FPS
+		startTime = SDL_GetTicks();
+		
+		/**************************************
+		** event handling & processing stuff **
+		**************************************/
+		//player->stop();
+		
+			
+		while (SDL_PollEvent(&event)) {  // we need a while loop as there may be several events in the queue
+			switch (event.type) {
+				case SDL_QUIT:
+					quit = 1;
+					break;
+					
+				case SDL_MOUSEBUTTONDOWN:
+					if (event.button.button == SDL_BUTTON_LEFT) {						
+						
+					}
+					break;
+					
+				case SDL_MOUSEBUTTONUP:
+					
+					break;
+								
+				case SDL_MOUSEMOTION:
+					mouseX = event.motion.x;
+					mouseY = event.motion.y;
+					break;
+			}
+		}
+		
+		if (keyPressed(SDLK_ESCAPE)) {
+			quit = 1;
+			break;
+		}
+		
+		/********************
+		** rendering stuff **
+		********************/
+		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
+		
+		SDL_Flip(screen);  // flip back buffer -> screen
+		
+		//SDL_framerateDelay(fpsman);
+		
+		frameTime = SDL_GetTicks()-startTime;
+		fps = (frameTime>0) ? 1000 / frameTime : 0;
+		SDL_Delay(25);
+	}
+	
+	delete level;
+
+	cout << "Exiting..." << endl;
+	SDL_Quit();
+	cout << "Done." << endl;
 	return 0;
 }
 
@@ -141,28 +237,6 @@ int mainGame(int argc, char* args[]) {
 			quit = 1;
 			break;
 		}
-		
-		if (keyPressed(SDLK_UP)) {
-			camera.move(0, -1);
-		} else if (keyPressed(SDLK_DOWN)) {
-			camera.move(0, 1);
-		}
-		
-		if (keyPressed(SDLK_LEFT)) {
-			camera.move(-1, 0);
-		} else if (keyPressed(SDLK_RIGHT)) {
-			camera.move(1, 0);
-		}
-		
-		if (keyPressed(SDLK_a)) {
-		//	player->strafeLeft();
-		} else if (keyPressed(SDLK_d)) {
-		//	player->strafeRight();
-		}
-		
-		if (keyPressed(SDLK_SPACE)) {
-		//	player->fireCurrentWeapon();
-		}
 
 		/*********************
 		** game logic stuff **
@@ -189,26 +263,21 @@ int mainGame(int argc, char* args[]) {
 		//ball->think();	// any pre move stuff
 		
 		ball->move(level);
-		if (mouseDown) {
-			ball->setColour(255, 0, 0);
-		} else {
-			ball->setColour(0, 0, 0);
-		}
 		
 		if (ball->cameraX() < (VIEWPORT_X + CAMERA_MOVE_THRESHOLD)) {
 			int ox = (VIEWPORT_X + CAMERA_MOVE_THRESHOLD) - ball->cameraX();
-			camera.move(ox, 0);
+			camera.translate(ox, 0);
 		} else if (ball->cameraX() > (VIEWPORT_W - CAMERA_MOVE_THRESHOLD)) {
 			int ox = ball->cameraX() - (VIEWPORT_W - CAMERA_MOVE_THRESHOLD);
-			camera.move(-ox, 0);
+			camera.translate(-ox, 0);
 		}
 		
 		if (ball->cameraY() < (VIEWPORT_Y + CAMERA_MOVE_THRESHOLD)) {
 			int oy = (VIEWPORT_Y + CAMERA_MOVE_THRESHOLD) - ball->cameraY();
-			camera.move(0, oy);
+			camera.translate(0, oy);
 		} else if (ball->cameraY() > (VIEWPORT_H - CAMERA_MOVE_THRESHOLD)) {
 			int oy = ball->cameraY() - (VIEWPORT_H - CAMERA_MOVE_THRESHOLD);
-			camera.move(0, -oy);
+			camera.translate(0, -oy);
 		}
 		
 		/********************

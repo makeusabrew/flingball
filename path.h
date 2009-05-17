@@ -23,6 +23,8 @@ class CPath {
 		void render();
 		bool isPolygon();
 		bool createPoints(int);
+		Point getMinPoint();
+		Point getMaxPoint();
 	private:
 		int colour;
 		int length;	// number of points

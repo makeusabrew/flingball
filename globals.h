@@ -27,18 +27,31 @@
 #define VIEWPORT_X 0
 #define VIEWPORT_Y 0
 
-#define CAMERA_MOVE_THRESHOLD 100
+#define CAMERA_MOVE_THRESHOLD 180
+
+/******************************
+* EDITOR STUFF
+******************************/
+
+#define EDITOR_SCREEN_WIDTH 1024
+#define EDITOR_SCREEN_HEIGHT 768
+#define EDITOR_SCREEN_W EDITOR_SCREEN_WIDTH
+#define EDITOR_SCREEN_H EDITOR_SCREEN_HEIGHT
+#define EDITOR_SCREEN_BPP 32
+
+#define EDITOR_VIEWPORT_WIDTH 1024
+#define EDITOR_VIEWPORT_HEIGHT 768
+#define EDITOR_VIEWPORT_W EDITOR_VIEWPORT_WIDTH
+#define EDITOR_VIEWPORT_H EDITOR_VIEWPORT_HEIGHT
+
+#define EDITOR_VIEWPORT_X 0
+#define EDITOR_VIEWPORT_Y 0
 
 #ifndef PI
 #define PI 3.14159265
 #endif
 
 #define DEBUG 1
-
-const int ENTITY_TYPE_PLAYER = 0;
-const int ENTITY_TYPE_ENEMY = 1;
-const int ENTITY_TYPE_PICKUP = 2;
-const int ENTITY_TYPE_BULLET = 3;
 
 // A set of very useful macros that you will find in most
 // code that I write whether I use them in a program or
