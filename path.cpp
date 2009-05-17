@@ -11,6 +11,7 @@
 //
 #include <SDL/SDL_gfxPrimitives.h>
 #include "path.h"
+#include "camera.h"
 CPath::CPath() {
 	cPoint = length = 0;
 	// we use the values below as they are "extremes" we're not going to encounter
@@ -67,12 +68,12 @@ bool CPath::addPoint(int px, int py) {
 
 void CPath::render() {
 #ifdef DEBUG
-	lineRGBA(screen, RVX(min.x), RVY(min.y), RVX(min.x), RVY(max.y), 128, 255, 0, 255);
-	lineRGBA(screen, RVX(min.x), RVY(min.y), RVX(max.x), RVY(min.y), 128, 255, 0, 255);
-	lineRGBA(screen, RVX(min.x), RVY(max.y), RVX(max.x), RVY(max.y), 128, 255, 0, 255);
-	lineRGBA(screen, RVX(max.x), RVY(max.y), RVX(max.x), RVY(min.y), 128, 255, 0, 255);
+	lineRGBA(screen, camera.x2r(min.x), camera.y2r(min.y), camera.x2r(min.x), camera.y2r(max.y), 128, 255, 0, 255);
+	lineRGBA(screen, camera.x2r(min.x), camera.y2r(min.y), camera.x2r(max.x), camera.y2r(min.y), 128, 255, 0, 255);
+	lineRGBA(screen, camera.x2r(min.x), camera.y2r(max.y), camera.x2r(max.x), camera.y2r(max.y), 128, 255, 0, 255);
+	lineRGBA(screen, camera.x2r(max.x), camera.y2r(max.y), camera.x2r(max.x), camera.y2r(min.y), 128, 255, 0, 255);
 #endif
 	for (int i = 0; i < length-1; i++) {
-		lineRGBA(screen, RVX(points[i].x), RVY(points[i].y), RVX(points[i+1].x), RVY(points[i+1].y), 0, 0, 0, 255);
+		lineRGBA(screen, camera.x2r(points[i].x), camera.y2r(points[i].y), camera.x2r(points[i+1].x), camera.y2r(points[i+1].y), 0, 0, 0, 255);
 	}
 }

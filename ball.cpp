@@ -13,6 +13,7 @@
 #include <iostream>
 #include "ball.h"
 #include "globals.h"
+#include "camera.h"
 #include <SDL/SDL_gfxPrimitives.h>
 
 using namespace std;
@@ -38,9 +39,6 @@ bool CBall::isPointInside(float px, float py) {
 	float x2 = x+r;
 	float y2 = y+r;
 	
-	px = AVX(px);
-	py = AVY(py);
-	
 	if (px > x1 && px < x2 && py > y1 && py < y2) {
 		return true;
 	} else {
@@ -49,8 +47,8 @@ bool CBall::isPointInside(float px, float py) {
 }
 
 void CBall::render() {
-	int dx = int(x) + VIEWPORT_X;
-	int dy = int(y) + VIEWPORT_Y;
+	int dx = camera.x2r(int(x));
+	int dy = camera.y2r(int(y));
 	circleRGBA(screen, dx, dy, r, cr, cg, cb, 255);
 }
 

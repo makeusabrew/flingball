@@ -113,7 +113,7 @@ int mainGame(int argc, char* args[]) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						
 						// do some shit based on the fact the mouse has been pressed
-						if (ball->isPointInside(event.button.x, event.button.y)) {
+						if (ball->isPointInside(camera.x2a(event.button.x), camera.y2a(event.button.y))) {
 							ball->startFling(event.button.x, event.button.y);
 						}
 						

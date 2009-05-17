@@ -18,6 +18,12 @@ class CCamera {
 		CCamera();
 		bool setViewport(int, int, int, int);
 		
+		int x2r(int);
+		int y2r(int);
+		
+		int x2a(int);
+		int y2a(int);
+		
 	private:
 		int x;
 		int y;

@@ -22,3 +22,19 @@ bool CCamera::setViewport(int cx, int cy, int cw, int ch) {
 	h = ch;
 	return true;
 }
+
+int CCamera::x2r(int ax) {
+	return ax + x;
+}
+
+int CCamera::y2r(int ay) {
+	return ay + y;
+}
+
+int CCamera::x2a(int rx) {
+	return rx - x;
+}
+
+int CCamera::y2a(int ry) {
+	return ry - y;
+}
