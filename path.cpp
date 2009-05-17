@@ -12,13 +12,19 @@
 #include <SDL/SDL_gfxPrimitives.h>
 #include "path.h"
 CPath::CPath() {
-	length = 0;
+	cPoint = length = 0;
 	// we use the values below as they are "extremes" we're not going to encounter
 	// in a real level. We could replace this with a #defined constant if we want
 	min.x = 999999;
 	min.y = 999999;
 	max.x = -999999;
 	max.y = -999999;
+}
+
+CPath::~CPath() {
+	if (length) {
+		delete [] points;
+	}
 }
 
 void CPath::setColour(int c) {
@@ -32,10 +38,13 @@ bool CPath::isPolygon() {
 			(points[0].y == points[length-1].y));
 }
 
+bool CPath::createPoints(int num) {
+	length = num;
+	points = new Point[num];
+	return true;
+}
+
 bool CPath::addPoint(int px, int py) {
-	if (length >= 100) {
-		return false;
-	}
 	// check if this is outside our current bounding box
 	if (px < min.x) {
 		min.x = px;
@@ -50,9 +59,9 @@ bool CPath::addPoint(int px, int py) {
 		max.y = py;
 	}
 	
-	points[length].x = px;
-	points[length].y = py;
-	length++;
+	points[cPoint].x = px;
+	points[cPoint].y = py;
+	cPoint++;
 	return true;
 }
 

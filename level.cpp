@@ -22,6 +22,12 @@ CLevel::CLevel() {
 	numPaths = 0;
 }
 
+CLevel::~CLevel() {
+	if (numPaths) {
+		delete [] paths;
+	}
+}
+
 bool CLevel::loadDataFromFile(string file) {
 	ifstream fin(file.c_str());  // for some reason we need the wierd c_str() conversion
 	if (!fin.is_open()) {
@@ -32,10 +38,11 @@ bool CLevel::loadDataFromFile(string file) {
 	fin >> w >> h;				// next is world max dimensions
 	fin >> startX >> startY;	// ball start coordinates
 	fin >> numPaths;
-	
+	paths = new CPath[numPaths];
 	for (int j = 0; j < numPaths; j++) {
 		int numPoints;
 		fin >> numPoints;
+		paths[j].createPoints(numPoints);
 		for (int i = 0; i < numPoints; i++) {
 			int px = 0;
 			int py = 0;

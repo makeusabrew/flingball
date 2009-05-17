@@ -17,14 +17,17 @@
 class CPath {
 	public:
 		CPath();
+		~CPath();
 		void setColour(int);
 		bool addPoint(int, int);
 		void render();
 		bool isPolygon();
+		bool createPoints(int);
 	private:
 		int colour;
 		int length;	// number of points
-		Point points[100];	// each path can be up to 100 points long
+		int cPoint;
+		Point* points;
 		Point min;
 		Point max;
 };

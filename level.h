@@ -18,6 +18,7 @@
 class CLevel {
 	public:
 		CLevel();
+		~CLevel();
 		bool loadDataFromFile(std::string);
 		std::string getTitle();
 		void render();
@@ -36,6 +37,6 @@ class CLevel {
 		int startY;
 		std::string title;
 		int numPaths;
-		CPath paths[100];
+		CPath* paths;
 };
 #endif
