@@ -15,6 +15,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_framerate.h>
 #include <SDL/SDL_gfxPrimitives.h>
+#include "Include/Box2D.h"
 
 using namespace std;
 
@@ -37,6 +38,19 @@ int mainEditor(int argc, char* args[]) {
 	int fps;
 	
 	int quit = 0;
+	
+	b2AABB worldAABB;
+	worldAABB.lowerBound.Set(-100.0f, -100.0f);
+	worldAABB.upperBound.Set(100.0f, 100.0f);
+
+	// Define the gravity vector.
+	b2Vec2 gravity(0.0f, -10.0f);
+
+	// Do we want to let bodies sleep?
+	bool doSleep = true;
+
+	// Construct a world object, which will hold and simulate the rigid bodies.
+	b2World world(worldAABB, gravity, doSleep);
 	
 	// SDL init
 	cout << "Starting up...(" << argc << ")" << endl;
