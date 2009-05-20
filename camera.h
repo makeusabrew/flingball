@@ -30,12 +30,17 @@ class CCamera {
 		float32 m2p(float32);
 		float32 p2m(float32);
 		
+		void zoomIn();
+		void zoomOut();
+		
 	private:
 		int x;
 		int y;
 		
 		int w;
 		int h;
+		
+		float32 scale;
 };
 
 #endif

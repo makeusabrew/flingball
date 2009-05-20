@@ -48,7 +48,9 @@
 #define EDITOR_VIEWPORT_X 0
 #define EDITOR_VIEWPORT_Y 0
 
-const float32 METRES_TO_PIXELS = 40.0f;
+const float32 DEFAULT_METRES_TO_PIXELS = 40.0f;
+const float32 MAX_METRES_TO_PIXELS = 100.0f;
+const float32 MIN_METRES_TO_PIXELS = 20.0f;
 // e.g. 1 metre = 50 pixels
 
 const float32 WORLD_BOUNDARY_FRICTION = 0.1f;

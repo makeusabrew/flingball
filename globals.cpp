@@ -255,6 +255,12 @@ int mainGame(int argc, char* args[]) {
 			break;
 		}
 		
+		if (keyPressed(SDLK_LEFT)) {
+			camera.zoomOut();
+		} else if (keyPressed(SDLK_RIGHT)) {
+			camera.zoomIn();
+		}
+		
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
 		
 		/*********************

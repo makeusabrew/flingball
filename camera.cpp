@@ -13,6 +13,7 @@
 CCamera::CCamera() {
 	x = y = 0;
 	w = h = 0;
+	scale = DEFAULT_METRES_TO_PIXELS;
 }
 
 bool CCamera::setViewport(int cx, int cy, int cw, int ch) {
@@ -52,9 +53,21 @@ float32 CCamera::y2a(float32 ry) {
 }
 
 float32 CCamera::m2p(float32 p) {
-	return (p * METRES_TO_PIXELS);
+	return (p * scale);
 }
 
 float32 CCamera::p2m(float32 p) {
-	return (p / METRES_TO_PIXELS);
+	return (p / scale);
+}
+
+void CCamera::zoomIn() {
+	if (++scale > MAX_METRES_TO_PIXELS) {
+		scale = MAX_METRES_TO_PIXELS;
+	}
+}
+
+void CCamera::zoomOut() {
+	if (--scale < MIN_METRES_TO_PIXELS) {
+		scale = MIN_METRES_TO_PIXELS;
+	}
 }
