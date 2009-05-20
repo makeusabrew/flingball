@@ -160,13 +160,12 @@ void CBall::stopFling(int mx, int my) {
 		v.x = -dist;
 		v.y = 0;
 	} else if (dy > 0 && dx < 0) {	// bottom left of ball
-		float a = dy / dx;
+		float a = (float)dy / (float)dx;
 		a = atan(a);
 		v.x = cos((a)) * dist;
 		v.y = sin((a)) * dist;
 	} else if (dy > 0 && dx > 0) {	// bottom right of ball
-		float a = dy / dx;
-		a = atan2(dy, dx);		
+		float a = atan2(dy, dx);		
 		v.x = -(cos((a)) * dist);
 		v.y = -(sin((a)) * dist);
 	}

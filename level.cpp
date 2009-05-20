@@ -38,6 +38,25 @@ bool CLevel::loadDataFromFile(string file) {
 	
 	createWorld();
 	
+	// now pony up the rest of the bodies!
+	
+	int numPolys = 0;
+	fin >> numPolys;	
+
+	for (int i = 0; i < numPolys; i++) {
+		int numVertices = 0;
+		fin >> numVertices;
+		
+		b2PolygonDef shapeDef;
+		shapeDef.vertexCount = numVertices;
+		for (int j = 0; j < numVertices; j++) {
+			float x;
+			float y;
+			fin >> x >> y;
+			shapeDef.vertices[j].Set(x, y);
+		}
+		worldStaticBody->CreateShape(&shapeDef);
+	}	
 
 	fin.close();
 	return true;
@@ -149,11 +168,4 @@ void CLevel::createWorld() {
 	bounds.vertices[2].Set(getRightBound(),getBottomBound() + 0.2f);
 	bounds.vertices[3].Set(getLeftBound(),getBottomBound() + 0.2f);
 	worldStaticBody->CreateShape(&bounds);
-	
-	b2PolygonDef triangleDef;
-	triangleDef.vertexCount = 3;
-	triangleDef.vertices[0].Set(2.0f, 10.0f);
-	triangleDef.vertices[1].Set(7.5f, 3.0f);
-	triangleDef.vertices[2].Set(10.0f, 10.0f);	
-	worldStaticBody->CreateShape(&triangleDef);
 }
