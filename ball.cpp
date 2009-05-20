@@ -50,6 +50,10 @@ CBall::~CBall() {
 	body = NULL;
 }
 
+b2Body* CBall::getBody() {
+	return body;
+}
+
 bool CBall::isPointInside(float px, float py) {
 	float x1 = x-r;
 	float y1 = y-r;
@@ -63,17 +67,18 @@ bool CBall::isPointInside(float px, float py) {
 	}
 }
 
+void CBall::setLinearVelocity(b2Vec2 v) {
+	body->SetLinearVelocity(v);
+}
+
 void CBall::render() {
-	//int dx = this->cameraX();
-	//int dy = this->cameraY();
-	//circleRGBA(screen, dx, dy, r, cr, cg, cb, 255);
 	
 	b2Vec2 position = body->GetPosition();
 	float32 angle = body->GetAngle();
 		
-	int dx = m2p(position.x);
-	int dy = m2p(position.y);
-	int dr = m2p(r);
+	int dx = camera.x2r(position.x);
+	int dy = camera.y2r(position.y);
+	int dr = camera.m2p(r);
 	circleRGBA(screen, dx, dy, dr, 0, 0, 0, 255);
 	
 	int lx = dx - cos((angle)) * dr;
@@ -135,9 +140,11 @@ int CBall::getFlingY() {
 }
 
 int CBall::cameraX() {
-	return camera.x2r(int(x));
+	b2Vec2 position = body->GetPosition();
+	return camera.x2r(position.x);
 }
 
 int CBall::cameraY() {
-	return camera.y2r(int(y));
+	b2Vec2 position = body->GetPosition();
+	return camera.y2r(position.y);
 }

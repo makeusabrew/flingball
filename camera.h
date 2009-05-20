@@ -21,11 +21,14 @@ class CCamera {
 		bool translate(int, int);
 		bool translateTo(int, int);
 		
-		int x2r(int);
-		int y2r(int);
+		int x2r(float32);
+		int y2r(float32);
 		
-		int x2a(int);
-		int y2a(int);
+		int x2a(float32);
+		int y2a(float32);
+		
+		float32 m2p(float32);
+		float32 p2m(float32);
 		
 	private:
 		int x;

@@ -25,12 +25,16 @@ class CBall {
 		void startFling(int, int);
 		void stopFling(int, int);
 		
+		void setLinearVelocity(b2Vec2);
+		
 		bool isFlinging();
 		int getFlingX();
 		int getFlingY();
 		
 		int cameraX();
 		int cameraY();
+		
+		b2Body* getBody();
 
 	private:
 		float x;

@@ -35,18 +35,26 @@ bool CCamera::translateTo(int nx, int ny) {
 	return true;
 }
 
-int CCamera::x2r(int ax) {
-	return ax + x;
+int CCamera::x2r(float32 ax) {
+	return int(m2p(ax) + x);
 }
 
-int CCamera::y2r(int ay) {
-	return ay + y;
+int CCamera::y2r(float32 ay) {
+	return int(m2p(ay) + y);
 }
 
-int CCamera::x2a(int rx) {
-	return rx - x;
+int CCamera::x2a(float32 rx) {
+	return int(m2p(rx) - x);
 }
 
-int CCamera::y2a(int ry) {
-	return ry - y;
+int CCamera::y2a(float32 ry) {
+	return int(m2p(ry) - y);
+}
+
+float32 CCamera::m2p(float32 p) {
+	return (p * METRES_TO_PIXELS);
+}
+
+float32 CCamera::p2m(float32 p) {
+	return (p / METRES_TO_PIXELS);
 }

@@ -63,30 +63,23 @@ int CLevel::getBottomBound() {
 	return (y + h);
 }
 
-void CLevel::render() {
-	// need to draw four lines representing our boundaries
-	//lineRGBA(screen, camera.x2r(this->getLeftBound()), camera.y2r(this->getTopBound()), camera.x2r(this->getRightBound()), camera.y2r(this->getTopBound()), 0, 0, 0, 255);
-	//lineRGBA(screen, camera.x2r(this->getRightBound()), camera.y2r(this->getTopBound()), camera.x2r(this->getRightBound()), camera.y2r(this->getBottomBound()), 0, 0, 0, 255);
-	//lineRGBA(screen, camera.x2r(this->getRightBound()), camera.y2r(this->getBottomBound()), camera.x2r(this->getLeftBound()), camera.y2r(this->getBottomBound()), 0, 0, 0, 255);
-	//lineRGBA(screen, camera.x2r(this->getLeftBound()), camera.y2r(this->getBottomBound()), camera.x2r(this->getLeftBound()), camera.y2r(this->getTopBound()), 0, 0, 0, 255);
-
-	
+void CLevel::render() {	
 	for (b2Shape* s = worldStaticBody->GetShapeList(); s; s = s->GetNext()) {
 		b2PolygonShape* sh = (b2PolygonShape *)s;
 		int count = sh->GetVertexCount();
 
 		const b2Vec2* v = sh->GetVertices();
 		for (int i = 0; i < count; i++) {
-			int sx = m2p(v[i].x);
-			int sy = m2p(v[i].y);
+			int sx = camera.x2r(v[i].x);
+			int sy = camera.y2r(v[i].y);
 			int dx = 0;
 			int dy = 0;
 			if (i == count-1) {
-				dx = m2p(v[0].x);
-				dy = m2p(v[0].y);
+				dx = camera.x2r(v[0].x);
+				dy = camera.y2r(v[0].y);
 			} else {
-				dx = m2p(v[i+1].x);
-				dy = m2p(v[i+1].y);
+				dx = camera.x2r(v[i+1].x);
+				dy = camera.y2r(v[i+1].y);
 			}
 			lineRGBA(screen, sx, sy, dx, dy, 0, 0, 0, 255);
 		}

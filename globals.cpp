@@ -192,7 +192,7 @@ int mainGame(int argc, char* args[]) {
 	CBall *ball;
 	ball = new CBall(level->getStartPoint());
 	
-	//camera.setViewport(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_W, VIEWPORT_H);
+	camera.setViewport(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_W, VIEWPORT_H);
 	/**************
 	** game loop **
 	**************/
@@ -228,6 +228,10 @@ int mainGame(int argc, char* args[]) {
 					//	if (ball->isPointInside(camera.x2a(event.button.x), camera.y2a(event.button.y))) {
 					//		ball->startFling(event.button.x, event.button.y);
 					//	}
+						b2Vec2 v;
+						v.x = ball->getBody()->GetLinearVelocity().x;
+						v.y = -10.0f;
+						ball->setLinearVelocity(v);
 						
 						mouseDown = true;
 					}
@@ -257,11 +261,6 @@ int mainGame(int argc, char* args[]) {
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
 		
 		level->world->Step(timeStep, iterations);
-		
-		level->render();
-		ball->render();
-
-
 
 		/*********************
 		** game logic stuff **
@@ -288,7 +287,7 @@ int mainGame(int argc, char* args[]) {
 		//ball->think();	// any pre move stuff
 		
 		//ball->move(level);
-		/*
+		
 		if (ball->cameraX() < (VIEWPORT_X + CAMERA_MOVE_THRESHOLD)) {
 			int ox = (VIEWPORT_X + CAMERA_MOVE_THRESHOLD) - ball->cameraX();
 			camera.translate(ox, 0);
@@ -304,7 +303,7 @@ int mainGame(int argc, char* args[]) {
 			int oy = ball->cameraY() - (VIEWPORT_H - CAMERA_MOVE_THRESHOLD);
 			camera.translate(0, -oy);
 		}
-		*/
+		
 		
 		/********************
 		** rendering stuff **
@@ -327,6 +326,10 @@ int mainGame(int argc, char* args[]) {
 		gui.w = SCREEN_W - VIEWPORT_W;
 		gui.h = VIEWPORT_H;
 		SDL_FillRect(screen, &gui, SDL_MapRGB(screen->format, 0, 0, 0));  // black layer
+		
+		level->render();
+		ball->render();
+		
 		//world->renderBackground(player->getAngle());
 		//player->render(fps);  // render our view first (and render some bullets and that)
 		
