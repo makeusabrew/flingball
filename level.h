@@ -36,10 +36,10 @@ class CLevel {
 		int data;
 		int w;
 		int h;
-		int x;
-		int y;
-		int startX;
-		int startY;
+		float32 x;
+		float32 y;
+		float32 startX;
+		float32 startY;
 		std::string title;
 		
 		b2Body *worldStaticBody;

@@ -294,13 +294,6 @@ int mainGame(int argc, char* args[]) {
 			lineRGBA(screen, x1, y1, x2, y2, 128, 128, 255, 255);
 		}
 		
-		SDL_Rect gui;
-		gui.x = VIEWPORT_W;
-		gui.y = VIEWPORT_Y;
-		gui.w = SCREEN_W - VIEWPORT_W;
-		gui.h = VIEWPORT_H;
-		SDL_FillRect(screen, &gui, SDL_MapRGB(screen->format, 0, 0, 0));  // black layer
-		
 		level->render();
 		ball->render();
 		
