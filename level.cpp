@@ -41,7 +41,9 @@ bool CLevel::loadDataFromFile(string file) {
 	// now pony up the rest of the bodies!
 	
 	int numPolys = 0;
-	fin >> numPolys;	
+	fin >> numPolys;
+	
+	fin >> endShapeIndex;
 
 	for (int i = 0; i < numPolys; i++) {
 		int numVertices = 0;
@@ -56,7 +58,9 @@ bool CLevel::loadDataFromFile(string file) {
 			shapeDef.vertices[j].Set(x, y);
 		}
 		worldStaticBody->CreateShape(&shapeDef);
-	}	
+	}
+	
+	
 
 	fin.close();
 	return true;
@@ -82,7 +86,8 @@ int CLevel::getBottomBound() {
 	return (y + h);
 }
 
-void CLevel::render() {	
+void CLevel::render() {
+	int sIndex = 0;	
 	for (b2Shape* s = worldStaticBody->GetShapeList(); s; s = s->GetNext()) {
 		b2PolygonShape* sh = (b2PolygonShape *)s;
 		int count = sh->GetVertexCount();
@@ -100,8 +105,13 @@ void CLevel::render() {
 				dx = camera.x2r(v[i+1].x);
 				dy = camera.y2r(v[i+1].y);
 			}
-			lineRGBA(screen, sx, sy, dx, dy, 0, 0, 0, 255);
+			//if (i == endShapeIndex) {
+			//	lineRGBA(screen, sx, sy, dx, dy, 0, 0, 255, 255);
+			//} else {
+				lineRGBA(screen, sx, sy, dx, dy, 0, 0, 0, 255);
+			//}
 		}
+		sIndex++;	// bump up the index
 	}
 	
 }
@@ -139,8 +149,8 @@ void CLevel::createWorld() {
 	b2PolygonDef bounds;
 	bounds.vertexCount = 4;
 	bounds.friction = WORLD_BOUNDARY_FRICTION;
-	bounds.vertices[0].Set(getLeftBound(), getTopBound() - 0.2f);	// 0.2f at time of writing = 10px
-	bounds.vertices[1].Set(getRightBound(),getTopBound() - 0.2f);
+	bounds.vertices[0].Set(getLeftBound(), getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[1].Set(getRightBound(),getTopBound() - WORLD_BOUNDARY_THICKNESS);
 	bounds.vertices[2].Set(getRightBound(),getTopBound());
 	bounds.vertices[3].Set(getLeftBound(),getTopBound());
 	worldStaticBody->CreateShape(&bounds);
@@ -148,19 +158,19 @@ void CLevel::createWorld() {
 	// left wall
 	bounds.vertexCount = 4;
 	bounds.friction = WORLD_BOUNDARY_FRICTION;
-	bounds.vertices[0].Set(getLeftBound() - 0.2f, getTopBound());
-	bounds.vertices[1].Set(getLeftBound(), getTopBound());
-	bounds.vertices[2].Set(getLeftBound(),getBottomBound());
-	bounds.vertices[3].Set(getLeftBound() - 0.2f,getBottomBound());
+	bounds.vertices[0].Set(getLeftBound() - WORLD_BOUNDARY_THICKNESS, getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[1].Set(getLeftBound(), getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[2].Set(getLeftBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[3].Set(getLeftBound() - WORLD_BOUNDARY_THICKNESS,getBottomBound() + WORLD_BOUNDARY_THICKNESS);
 	worldStaticBody->CreateShape(&bounds);
 	
 	// right wall
 	bounds.vertexCount = 4;
 	bounds.friction = WORLD_BOUNDARY_FRICTION;
-	bounds.vertices[0].Set(getRightBound(), getTopBound());
-	bounds.vertices[1].Set(getRightBound() + 0.2f, getTopBound());
-	bounds.vertices[2].Set(getRightBound() + 0.2f,getBottomBound());
-	bounds.vertices[3].Set(getRightBound(), getBottomBound());
+	bounds.vertices[0].Set(getRightBound(), getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[1].Set(getRightBound() + WORLD_BOUNDARY_THICKNESS, getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[2].Set(getRightBound() + WORLD_BOUNDARY_THICKNESS,getBottomBound() + WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[3].Set(getRightBound(), getBottomBound() + WORLD_BOUNDARY_THICKNESS);
 	worldStaticBody->CreateShape(&bounds);
 	
 	// bottom wall
@@ -168,7 +178,7 @@ void CLevel::createWorld() {
 	bounds.friction = WORLD_BOUNDARY_FRICTION;
 	bounds.vertices[0].Set(getLeftBound(), getBottomBound());	// 0.2f at time of writing = 10px
 	bounds.vertices[1].Set(getRightBound(),getBottomBound());
-	bounds.vertices[2].Set(getRightBound(),getBottomBound() + 0.2f);
-	bounds.vertices[3].Set(getLeftBound(),getBottomBound() + 0.2f);
+	bounds.vertices[2].Set(getRightBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[3].Set(getLeftBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
 	worldStaticBody->CreateShape(&bounds);
 }

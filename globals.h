@@ -52,6 +52,7 @@ const float32 METRES_TO_PIXELS = 40.0f;
 // e.g. 1 metre = 50 pixels
 
 const float32 WORLD_BOUNDARY_FRICTION = 0.1f;
+const float32 WORLD_BOUNDARY_THICKNESS = 0.5f;
 
 
 #ifndef PI

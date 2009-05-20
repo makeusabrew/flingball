@@ -40,7 +40,7 @@ CBall::CBall(b2Vec2 p) {
 	
 	shapeDef.density = 1.0f;
 	shapeDef.friction = 0.2f;
-	shapeDef.restitution = 0.5f;
+	shapeDef.restitution = 0.6f;
 	body->CreateShape(&shapeDef);
 	body->SetMassFromShapes();
 }

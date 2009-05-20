@@ -36,6 +36,7 @@ class CLevel {
 		int data;
 		int w;
 		int h;
+		int endShapeIndex;
 		float32 x;
 		float32 y;
 		float32 startX;
