@@ -13,7 +13,7 @@
 CCamera::CCamera() {
 	x = y = 0;
 	w = h = 0;
-	scale = DEFAULT_METRES_TO_PIXELS;
+	scale = MIN_METRES_TO_PIXELS;
 }
 
 bool CCamera::setViewport(int cx, int cy, int cw, int ch) {
@@ -70,4 +70,26 @@ void CCamera::zoomOut() {
 	if (--scale < MIN_METRES_TO_PIXELS) {
 		scale = MIN_METRES_TO_PIXELS;
 	}
+}
+
+void CCamera::zoomIn(float32 z) {
+	scale += z;
+	if (scale > MAX_METRES_TO_PIXELS) {
+		scale = MAX_METRES_TO_PIXELS;
+	}
+}
+
+void CCamera::zoomOut(float32 z) {
+	scale -= z;
+	if (scale < MIN_METRES_TO_PIXELS) {
+		scale = MIN_METRES_TO_PIXELS;
+	}
+}
+
+float32 CCamera::getZoom() {
+	return scale;
+}
+
+void CCamera::setZoom(float32 z) {
+	scale = z;
 }

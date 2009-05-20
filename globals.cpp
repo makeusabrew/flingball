@@ -205,6 +205,9 @@ int mainGame(int argc, char* args[]) {
 	
 	float32 timeStep = 1.0f / 60.0f;
 	int32 iterations = 10;
+	bool introZoom = true;
+	
+	int32 loopStart = SDL_GetTicks();
 	while(!quit) {
 		// FPS
 		startTime = SDL_GetTicks();
@@ -254,11 +257,20 @@ int mainGame(int argc, char* args[]) {
 			quit = 1;
 			break;
 		}
-		
-		if (keyPressed(SDLK_LEFT)) {
-			camera.zoomOut();
-		} else if (keyPressed(SDLK_RIGHT)) {
-			camera.zoomIn();
+		if (introZoom) {
+			if (SDL_GetTicks() - loopStart >= 2500) {
+				camera.zoomIn(0.25f);
+				if (camera.getZoom() >= DEFAULT_METRES_TO_PIXELS) {
+					camera.setZoom(DEFAULT_METRES_TO_PIXELS);
+					introZoom = false;
+				}
+			}
+		} else {
+			if (keyPressed(SDLK_LEFT)) {
+				camera.zoomOut();
+			} else if (keyPressed(SDLK_RIGHT)) {
+				camera.zoomIn();
+			}
 		}
 		
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer

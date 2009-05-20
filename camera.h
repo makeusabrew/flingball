@@ -33,6 +33,12 @@ class CCamera {
 		void zoomIn();
 		void zoomOut();
 		
+		void zoomIn(float32);
+		void zoomOut(float32);
+		
+		float32 getZoom();
+		void setZoom(float32);
+		
 	private:
 		int x;
 		int y;
