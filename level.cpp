@@ -121,27 +121,46 @@ void CLevel::createWorld() {
 	bodyDef.position.Set(0.0f, 0.0f);
 	worldStaticBody = world->CreateBody(&bodyDef);
 	
+	// now set up our extreme four walls
+	
+	// ceiling
+	b2PolygonDef bounds;
+	bounds.vertexCount = 4;
+	bounds.vertices[0].Set(getLeftBound(), getTopBound() - 0.2f);	// 0.2f at time of writing = 10px
+	bounds.vertices[1].Set(getRightBound(),getTopBound() - 0.2f);
+	bounds.vertices[2].Set(getRightBound(),getTopBound());
+	bounds.vertices[3].Set(getLeftBound(),getTopBound());
+	worldStaticBody->CreateShape(&bounds);
+	
+	// left wall
+	bounds.vertexCount = 4;
+	bounds.vertices[0].Set(getLeftBound() - 0.2f, getTopBound());
+	bounds.vertices[1].Set(getLeftBound(), getTopBound());
+	bounds.vertices[2].Set(getLeftBound(),getBottomBound());
+	bounds.vertices[3].Set(getLeftBound() - 0.2f,getBottomBound());
+	worldStaticBody->CreateShape(&bounds);
+	
+	// right wall
+	bounds.vertexCount = 4;
+	bounds.vertices[0].Set(getRightBound(), getTopBound());
+	bounds.vertices[1].Set(getRightBound() + 0.2f, getTopBound());
+	bounds.vertices[2].Set(getRightBound() + 0.2f,getBottomBound());
+	bounds.vertices[3].Set(getRightBound(), getBottomBound());
+	worldStaticBody->CreateShape(&bounds);
+	
+	// bottom wall
+	bounds.vertexCount = 4;
+	bounds.friction = 0.5f;
+	bounds.vertices[0].Set(getLeftBound(), getBottomBound());	// 0.2f at time of writing = 10px
+	bounds.vertices[1].Set(getRightBound(),getBottomBound());
+	bounds.vertices[2].Set(getRightBound(),getBottomBound() + 0.2f);
+	bounds.vertices[3].Set(getLeftBound(),getBottomBound() + 0.2f);
+	worldStaticBody->CreateShape(&bounds);
+	
 	b2PolygonDef triangleDef;
 	triangleDef.vertexCount = 3;
-	triangleDef.vertices[0].Set(5.0f, 10.0f);
-	triangleDef.vertices[1].Set(7.5f, 5.0f);
+	triangleDef.vertices[0].Set(2.0f, 10.0f);
+	triangleDef.vertices[1].Set(7.5f, 3.0f);
 	triangleDef.vertices[2].Set(10.0f, 10.0f);	
 	worldStaticBody->CreateShape(&triangleDef);
-	
-	b2PolygonDef floorDef;
-	floorDef.vertexCount = 4;
-	floorDef.friction = 0.3f;
-	floorDef.vertices[0].Set(0.0f, 11.0f);
-	floorDef.vertices[1].Set(15.0f, 11.0f);
-	floorDef.vertices[2].Set(15.0f, 12.0f);
-	floorDef.vertices[3].Set(0.0f, 12.0f);	
-	worldStaticBody->CreateShape(&floorDef);
-	
-	floorDef.vertexCount = 4;
-	floorDef.friction = 0.3f;
-	floorDef.vertices[0].Set(1.0f, 9.0f);
-	floorDef.vertices[1].Set(2.0f, 9.0f);
-	floorDef.vertices[2].Set(2.0f, 10.9f);
-	floorDef.vertices[3].Set(1.0f, 10.9f);	
-	worldStaticBody->CreateShape(&floorDef);
 }
