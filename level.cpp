@@ -138,6 +138,7 @@ void CLevel::createWorld() {
 	// ceiling
 	b2PolygonDef bounds;
 	bounds.vertexCount = 4;
+	bounds.friction = WORLD_BOUNDARY_FRICTION;
 	bounds.vertices[0].Set(getLeftBound(), getTopBound() - 0.2f);	// 0.2f at time of writing = 10px
 	bounds.vertices[1].Set(getRightBound(),getTopBound() - 0.2f);
 	bounds.vertices[2].Set(getRightBound(),getTopBound());
@@ -146,6 +147,7 @@ void CLevel::createWorld() {
 	
 	// left wall
 	bounds.vertexCount = 4;
+	bounds.friction = WORLD_BOUNDARY_FRICTION;
 	bounds.vertices[0].Set(getLeftBound() - 0.2f, getTopBound());
 	bounds.vertices[1].Set(getLeftBound(), getTopBound());
 	bounds.vertices[2].Set(getLeftBound(),getBottomBound());
@@ -154,6 +156,7 @@ void CLevel::createWorld() {
 	
 	// right wall
 	bounds.vertexCount = 4;
+	bounds.friction = WORLD_BOUNDARY_FRICTION;
 	bounds.vertices[0].Set(getRightBound(), getTopBound());
 	bounds.vertices[1].Set(getRightBound() + 0.2f, getTopBound());
 	bounds.vertices[2].Set(getRightBound() + 0.2f,getBottomBound());
@@ -162,7 +165,7 @@ void CLevel::createWorld() {
 	
 	// bottom wall
 	bounds.vertexCount = 4;
-	bounds.friction = 0.5f;
+	bounds.friction = WORLD_BOUNDARY_FRICTION;
 	bounds.vertices[0].Set(getLeftBound(), getBottomBound());	// 0.2f at time of writing = 10px
 	bounds.vertices[1].Set(getRightBound(),getBottomBound());
 	bounds.vertices[2].Set(getRightBound(),getBottomBound() + 0.2f);

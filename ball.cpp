@@ -31,7 +31,7 @@ CBall::CBall(b2Vec2 p) {
 	
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(p.x, p.y);
-	bodyDef.userData = this;
+	bodyDef.angularDamping = 0.75f;
 	body = level->world->CreateBody(&bodyDef);
 	
 	b2CircleDef shapeDef;
@@ -39,7 +39,7 @@ CBall::CBall(b2Vec2 p) {
 	//shapeDef.localPosition.Set(r/2.0f, r/2.0f);	// this basically means where is the X / Y offset. we make it the middle of the ball
 	
 	shapeDef.density = 1.0f;
-	shapeDef.friction = 0.3f;
+	shapeDef.friction = 0.2f;
 	shapeDef.restitution = 0.5f;
 	body->CreateShape(&shapeDef);
 	body->SetMassFromShapes();
