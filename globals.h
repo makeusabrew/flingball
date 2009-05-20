@@ -13,6 +13,7 @@
 #define INC_GLOBALS_H
 #include <string>
 #include <SDL/SDL.h>
+#include "Include/Box2D.h"
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define SCREEN_W SCREEN_WIDTH
@@ -47,6 +48,11 @@
 #define EDITOR_VIEWPORT_X 0
 #define EDITOR_VIEWPORT_Y 0
 
+const float METRES_TO_PIXELS = 50.0f;
+// e.g. 1 metre = 50 pixels
+#define m2p(a) (a*METRES_TO_PIXELS)
+#define p2m(a) (a/METRES_TO_PIXELS)
+
 #ifndef PI
 #define PI 3.14159265
 #endif
@@ -74,9 +80,10 @@ typedef struct{
 } Point;
 
 class CCamera;
+class CLevel;
 
 extern SDL_Surface *screen;
 extern CCamera camera;
-
+extern CLevel* level;
 
 #endif

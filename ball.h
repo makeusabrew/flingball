@@ -12,17 +12,16 @@
 #ifndef INC_BALL_H
 #define INC_BALL_H
 #include <SDL/SDL.h>
-#include "level.h"
+#include "globals.h"
 
 class CBall {
 	public:
-		CBall();
+		CBall(b2Vec2);
 		~CBall();
 		bool isPointInside(float px, float py);
-		void move(CLevel *);
 		void render();
 		bool setColour(int, int, int);
-		void setCoords(Point p);
+		void setCoords(b2Vec2 p);
 		void startFling(int, int);
 		void stopFling(int, int);
 		
@@ -40,7 +39,7 @@ class CBall {
 		float vx;
 		float vy;
 
-		int r;
+		float32 r;
 		
 		int cr;
 		int cg;
@@ -49,6 +48,8 @@ class CBall {
 		bool flinging;	// dragging a fling?
 		int fX;	// fling X
 		int fY;	// fling Y
+		
+		b2Body* body;
 };
 		
 #endif

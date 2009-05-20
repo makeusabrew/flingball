@@ -26,9 +26,12 @@ class CLevel {
 		int getRightBound();
 		int getTopBound();
 		int getBottomBound();
-		Point getStartPoint();
+		b2Vec2 getStartPoint();
 		CPath *getPaths();
-		int getNumPaths();
+		void createWorld();
+		
+		b2World *world;
+		
 	private:
 		int data;
 		int w;
@@ -38,7 +41,7 @@ class CLevel {
 		int startX;
 		int startY;
 		std::string title;
-		int numPaths;
-		CPath* paths;
+		
+		b2Body *worldStaticBody;
 };
 #endif

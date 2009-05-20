@@ -30,6 +30,7 @@ using namespace std;
 
 SDL_Surface *screen;
 CCamera camera;
+CLevel *level;
 
 int mainEditor(int argc, char* args[]) {
 		// for fps counter
@@ -182,18 +183,16 @@ int mainGame(int argc, char* args[]) {
 	//CEvent eventhandler;
 	//eventhandler.setPlayer(player);
 	
-	CLevel *level;
+	//box2d bits
+	
 	level = new CLevel;
 	
-	level->loadDataFromFile("data/maps/1.lvl");
-	
-	cout << level->getTitle() << endl;
+	level->loadDataFromFile("data/maps/1.lvl");	
 
 	CBall *ball;
-	ball = new CBall;
-	ball->setCoords(level->getStartPoint());
+	ball = new CBall(level->getStartPoint());
 	
-	camera.setViewport(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_W, VIEWPORT_H);
+	//camera.setViewport(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_W, VIEWPORT_H);
 	/**************
 	** game loop **
 	**************/
@@ -203,6 +202,9 @@ int mainGame(int argc, char* args[]) {
 	bool mouseDown = false;
 	int mouseX = 0;
 	int mouseY = 0;
+	
+	float32 timeStep = 1.0f / 60.0f;
+	int32 iterations = 10;
 	while(!quit) {
 		// FPS
 		startTime = SDL_GetTicks();
@@ -223,9 +225,9 @@ int mainGame(int argc, char* args[]) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						
 						// do some shit based on the fact the mouse has been pressed
-						if (ball->isPointInside(camera.x2a(event.button.x), camera.y2a(event.button.y))) {
-							ball->startFling(event.button.x, event.button.y);
-						}
+					//	if (ball->isPointInside(camera.x2a(event.button.x), camera.y2a(event.button.y))) {
+					//		ball->startFling(event.button.x, event.button.y);
+					//	}
 						
 						mouseDown = true;
 					}
@@ -233,9 +235,9 @@ int mainGame(int argc, char* args[]) {
 					
 				case SDL_MOUSEBUTTONUP:
 					if (event.button.button == SDL_BUTTON_LEFT) {
-						if (ball->isFlinging()) {
-							ball->stopFling(event.button.x, event.button.y);	// launch sucker!
-						}
+					//	if (ball->isFlinging()) {
+					//		ball->stopFling(event.button.x, event.button.y);	// launch sucker!
+					//	}
 						mouseDown = false;
 					}
 					break;
@@ -251,6 +253,15 @@ int mainGame(int argc, char* args[]) {
 			quit = 1;
 			break;
 		}
+		
+		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
+		
+		level->world->Step(timeStep, iterations);
+		
+		level->render();
+		ball->render();
+
+
 
 		/*********************
 		** game logic stuff **
@@ -276,8 +287,8 @@ int mainGame(int argc, char* args[]) {
 		
 		//ball->think();	// any pre move stuff
 		
-		ball->move(level);
-		
+		//ball->move(level);
+		/*
 		if (ball->cameraX() < (VIEWPORT_X + CAMERA_MOVE_THRESHOLD)) {
 			int ox = (VIEWPORT_X + CAMERA_MOVE_THRESHOLD) - ball->cameraX();
 			camera.translate(ox, 0);
@@ -293,21 +304,22 @@ int mainGame(int argc, char* args[]) {
 			int oy = ball->cameraY() - (VIEWPORT_H - CAMERA_MOVE_THRESHOLD);
 			camera.translate(0, -oy);
 		}
+		*/
 		
 		/********************
 		** rendering stuff **
 		********************/
-		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
 		
-		level->render();
-		ball->render();
-		if (ball->isFlinging()) {
-			int x1 = ball->getFlingX();
-			int y1 = ball->getFlingY();
-			int x2 = mouseX;
-			int y2 = mouseY;
-			lineRGBA(screen, x1, y1, x2, y2, 128, 128, 255, 255);
-		}
+		
+		//level->render();
+		//ball->render();
+		//if (ball->isFlinging()) {
+	//		int x1 = ball->getFlingX();
+	//		int y1 = ball->getFlingY();
+	//		int x2 = mouseX;
+	//		int y2 = mouseY;
+	//		lineRGBA(screen, x1, y1, x2, y2, 128, 128, 255, 255);
+	//	}
 		
 		SDL_Rect gui;
 		gui.x = VIEWPORT_W;
@@ -334,7 +346,7 @@ int mainGame(int argc, char* args[]) {
 		
 		frameTime = SDL_GetTicks()-startTime;
 		fps = (frameTime>0) ? 1000 / frameTime : 0;
-		SDL_Delay(25);
+		SDL_Delay(16);
 	}
 	
 	delete ball;

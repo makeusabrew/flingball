@@ -21,13 +21,10 @@ using namespace std;
 CLevel::CLevel() {
 	w = h = 0;
 	x = y = 0;
-	numPaths = 0;
 }
 
 CLevel::~CLevel() {
-	if (numPaths) {
-		delete [] paths;
-	}
+	delete world;
 }
 
 bool CLevel::loadDataFromFile(string file) {
@@ -35,23 +32,12 @@ bool CLevel::loadDataFromFile(string file) {
 	if (!fin.is_open()) {
 		return false;
 	}
+	getline(fin, title);    // first line is title  
+	fin >> w >> h;                          // next is world max dimensions
+	fin >> startX >> startY;        // ball start coordinates
 	
-	getline(fin, title);	// first line is title	
-	fin >> w >> h;				// next is world max dimensions
-	fin >> startX >> startY;	// ball start coordinates
-	fin >> numPaths;
-	paths = new CPath[numPaths];
-	for (int j = 0; j < numPaths; j++) {
-		int numPoints;
-		fin >> numPoints;
-		paths[j].createPoints(numPoints);
-		for (int i = 0; i < numPoints; i++) {
-			int px = 0;
-			int py = 0;
-			fin >> px >> py;
-			paths[j].addPoint(px, py);
-		}
-	}
+	createWorld();
+	
 
 	fin.close();
 	return true;
@@ -79,27 +65,83 @@ int CLevel::getBottomBound() {
 
 void CLevel::render() {
 	// need to draw four lines representing our boundaries
-	lineRGBA(screen, camera.x2r(this->getLeftBound()), camera.y2r(this->getTopBound()), camera.x2r(this->getRightBound()), camera.y2r(this->getTopBound()), 0, 0, 0, 255);
-	lineRGBA(screen, camera.x2r(this->getRightBound()), camera.y2r(this->getTopBound()), camera.x2r(this->getRightBound()), camera.y2r(this->getBottomBound()), 0, 0, 0, 255);
-	lineRGBA(screen, camera.x2r(this->getRightBound()), camera.y2r(this->getBottomBound()), camera.x2r(this->getLeftBound()), camera.y2r(this->getBottomBound()), 0, 0, 0, 255);
-	lineRGBA(screen, camera.x2r(this->getLeftBound()), camera.y2r(this->getBottomBound()), camera.x2r(this->getLeftBound()), camera.y2r(this->getTopBound()), 0, 0, 0, 255);
-	for (int i = 0; i < numPaths; i++) {
-		// just render each path
-		paths[i].render();
+	//lineRGBA(screen, camera.x2r(this->getLeftBound()), camera.y2r(this->getTopBound()), camera.x2r(this->getRightBound()), camera.y2r(this->getTopBound()), 0, 0, 0, 255);
+	//lineRGBA(screen, camera.x2r(this->getRightBound()), camera.y2r(this->getTopBound()), camera.x2r(this->getRightBound()), camera.y2r(this->getBottomBound()), 0, 0, 0, 255);
+	//lineRGBA(screen, camera.x2r(this->getRightBound()), camera.y2r(this->getBottomBound()), camera.x2r(this->getLeftBound()), camera.y2r(this->getBottomBound()), 0, 0, 0, 255);
+	//lineRGBA(screen, camera.x2r(this->getLeftBound()), camera.y2r(this->getBottomBound()), camera.x2r(this->getLeftBound()), camera.y2r(this->getTopBound()), 0, 0, 0, 255);
+
+	
+	for (b2Shape* s = worldStaticBody->GetShapeList(); s; s = s->GetNext()) {
+		b2PolygonShape* sh = (b2PolygonShape *)s;
+		int count = sh->GetVertexCount();
+
+		const b2Vec2* v = sh->GetVertices();
+		for (int i = 0; i < count; i++) {
+			int sx = m2p(v[i].x);
+			int sy = m2p(v[i].y);
+			int dx = 0;
+			int dy = 0;
+			if (i == count-1) {
+				dx = m2p(v[0].x);
+				dy = m2p(v[0].y);
+			} else {
+				dx = m2p(v[i+1].x);
+				dy = m2p(v[i+1].y);
+			}
+			lineRGBA(screen, sx, sy, dx, dy, 0, 0, 0, 255);
+		}
 	}
+	
 }
 
-Point CLevel::getStartPoint() {
-	Point p;
+b2Vec2 CLevel::getStartPoint() {
+	b2Vec2 p;
 	p.x = startX;
 	p.y = startY;
 	return p;
 }
 
 CPath* CLevel::getPaths() {
-	return paths;
+//	return paths;
+	return NULL;
 }
 
-int CLevel::getNumPaths() {
-	return numPaths;
+void CLevel::createWorld() {
+	b2AABB worldAABB;
+	worldAABB.lowerBound.Set(getLeftBound() - 10.0f, getTopBound() - 10.0f);
+	worldAABB.upperBound.Set(getRightBound() + 10.0f, getBottomBound() + 10.0f);
+
+	// Define the gravity vector.
+	b2Vec2 gravity(0.0f, 10.0f);
+
+	// Construct a world object, which will hold and simulate the rigid bodies.
+	world = new b2World(worldAABB, gravity, true);	// last param is doSleep
+	
+	b2BodyDef bodyDef;
+	bodyDef.position.Set(0.0f, 0.0f);
+	worldStaticBody = world->CreateBody(&bodyDef);
+	
+	b2PolygonDef triangleDef;
+	triangleDef.vertexCount = 3;
+	triangleDef.vertices[0].Set(5.0f, 10.0f);
+	triangleDef.vertices[1].Set(7.5f, 5.0f);
+	triangleDef.vertices[2].Set(10.0f, 10.0f);	
+	worldStaticBody->CreateShape(&triangleDef);
+	
+	b2PolygonDef floorDef;
+	floorDef.vertexCount = 4;
+	floorDef.friction = 0.3f;
+	floorDef.vertices[0].Set(0.0f, 11.0f);
+	floorDef.vertices[1].Set(15.0f, 11.0f);
+	floorDef.vertices[2].Set(15.0f, 12.0f);
+	floorDef.vertices[3].Set(0.0f, 12.0f);	
+	worldStaticBody->CreateShape(&floorDef);
+	
+	floorDef.vertexCount = 4;
+	floorDef.friction = 0.3f;
+	floorDef.vertices[0].Set(1.0f, 9.0f);
+	floorDef.vertices[1].Set(2.0f, 9.0f);
+	floorDef.vertices[2].Set(2.0f, 10.9f);
+	floorDef.vertices[3].Set(1.0f, 10.9f);	
+	worldStaticBody->CreateShape(&floorDef);
 }
