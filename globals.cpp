@@ -225,13 +225,10 @@ int mainGame(int argc, char* args[]) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						
 						// do some shit based on the fact the mouse has been pressed
-					//	if (ball->isPointInside(camera.x2a(event.button.x), camera.y2a(event.button.y))) {
-					//		ball->startFling(event.button.x, event.button.y);
-					//	}
-						b2Vec2 v;
-						v.x = ball->getBody()->GetLinearVelocity().x;
-						v.y = -10.0f;
-						ball->setLinearVelocity(v);
+						if (ball->isRelPointInside(event.button.x, event.button.y)) {
+							ball->startFling(event.button.x, event.button.y);
+						}
+						
 						
 						mouseDown = true;
 					}
@@ -239,9 +236,9 @@ int mainGame(int argc, char* args[]) {
 					
 				case SDL_MOUSEBUTTONUP:
 					if (event.button.button == SDL_BUTTON_LEFT) {
-					//	if (ball->isFlinging()) {
-					//		ball->stopFling(event.button.x, event.button.y);	// launch sucker!
-					//	}
+						if (ball->isFlinging()) {
+							ball->stopFling(event.button.x, event.button.y);	// launch sucker!
+						}
 						mouseDown = false;
 					}
 					break;
@@ -260,33 +257,10 @@ int mainGame(int argc, char* args[]) {
 		
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
 		
-		level->world->Step(timeStep, iterations);
-
 		/*********************
 		** game logic stuff **
 		*********************/
-		
-		//player->move();  // this takes care of bound checking
-		
-		//player->doThinks();  // basically amounts to weapon firing / bullets and stuff
-		
-		//world->doEntityThinks();
-			
-		
-		
-		/*
-		SDL_Rect rect;
-		rect.x = VIEWPORT_X;
-		rect.y = VIEWPORT_Y;
-		rect.w = VIEWPORT_W;
-		rect.h = VIEWPORT_H;
-		SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255, 255, 255));	// white game area
-		*/
-		
-		
-		//ball->think();	// any pre move stuff
-		
-		//ball->move(level);
+		level->world->Step(timeStep, iterations);
 		
 		if (ball->cameraX() < (VIEWPORT_X + CAMERA_MOVE_THRESHOLD)) {
 			int ox = (VIEWPORT_X + CAMERA_MOVE_THRESHOLD) - ball->cameraX();
@@ -312,13 +286,13 @@ int mainGame(int argc, char* args[]) {
 		
 		//level->render();
 		//ball->render();
-		//if (ball->isFlinging()) {
-	//		int x1 = ball->getFlingX();
-	//		int y1 = ball->getFlingY();
-	//		int x2 = mouseX;
-	//		int y2 = mouseY;
-	//		lineRGBA(screen, x1, y1, x2, y2, 128, 128, 255, 255);
-	//	}
+		if (ball->isFlinging()) {
+			int x1 = ball->getFlingX();
+			int y1 = ball->getFlingY();
+			int x2 = mouseX;
+			int y2 = mouseY;
+			lineRGBA(screen, x1, y1, x2, y2, 128, 128, 255, 255);
+		}
 		
 		SDL_Rect gui;
 		gui.x = VIEWPORT_W;
@@ -329,19 +303,6 @@ int mainGame(int argc, char* args[]) {
 		
 		level->render();
 		ball->render();
-		
-		//world->renderBackground(player->getAngle());
-		//player->render(fps);  // render our view first (and render some bullets and that)
-		
-		//world->render();  // render the world (this actually only renders the top down map)
-		//player->renderOnMap();
-		//player->think();
-		
-		// draw hud
-		//hud->draw();
-
-		// write fps counter
-		//hud->drawFPS(fps);
 		
 		SDL_Flip(screen);  // flip back buffer -> screen
 		

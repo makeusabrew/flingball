@@ -19,6 +19,7 @@ class CBall {
 		CBall(b2Vec2);
 		~CBall();
 		bool isPointInside(float px, float py);
+		bool isRelPointInside(float, float);
 		void render();
 		bool setColour(int, int, int);
 		void setCoords(b2Vec2 p);

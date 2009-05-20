@@ -67,6 +67,24 @@ bool CBall::isPointInside(float px, float py) {
 	}
 }
 
+bool CBall::isRelPointInside(float px, float py) {
+	b2Vec2 position = body->GetPosition();
+	int dx = camera.x2r(position.x);
+	int dy = camera.y2r(position.y);
+	int dr = camera.m2p(r);
+	
+	float x1 = dx-dr;
+	float y1 = dy-dr;
+	float x2 = dx+dr;
+	float y2 = dy+dr;
+	
+	if (px > x1 && px < x2 && py > y1 && py < y2) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 void CBall::setLinearVelocity(b2Vec2 v) {
 	body->SetLinearVelocity(v);
 }
@@ -79,8 +97,11 @@ void CBall::render() {
 	int dx = camera.x2r(position.x);
 	int dy = camera.y2r(position.y);
 	int dr = camera.m2p(r);
-	circleRGBA(screen, dx, dy, dr, 0, 0, 0, 255);
-	
+	if (!flinging) {
+		circleRGBA(screen, dx, dy, dr, 0, 0, 0, 255);
+	} else {
+		circleRGBA(screen, dx, dy, dr, 128, 10, 0, 255);
+	}
 	int lx = dx - cos((angle)) * dr;
 	int ly = dy - sin((angle)) * dr;
 	
@@ -110,20 +131,46 @@ void CBall::startFling(int mx, int my) {
 //Ian was ear.
 
 void CBall::stopFling(int mx, int my) {
-	float dx = mx-fX;
-	float dy = my-fY;
+	int dx = mx-fX;
+	int dy = my-fY;
 	float dist = sqrt((dx*dx) + (dy*dy));	// this is the absolute distance the mouse was dragged. work on it
+	
+	if (body->IsSleeping()) {
+		body->WakeUp();
+	}
 	
 	if (dist > 150) {
 		dist = 150;
 	}
 	dist *= 0.15;
 	
-	float a = dy / dx;
-	a = atan(a);
-	
-	vx = cos((a)) * dist;
-	vy = sin((a)) * dist;
+	b2Vec2 v;
+	// okay, we need to work out which quadrant we're in
+	// just work clockwise, taking into account a few exceptions
+	if (dy > 0 && dx == 0) {	// straight up
+		v.x = 0;
+		v.y = dist;
+	} else if (dy < 0 && dx == 0) {	// straight down
+		v.x = 0;
+		v.y = -dist;
+	} else if (dx > 0 && dy == 0) {	// straight left
+		v.x = dist;
+		v.y = 0;
+	} else if (dx < 0 && dy == 0) {	// straight right
+		v.x = -dist;
+		v.y = 0;
+	} else if (dy > 0 && dx < 0) {	// bottom left of ball
+		float a = dy / dx;
+		a = atan(a);
+		v.x = cos((a)) * dist;
+		v.y = sin((a)) * dist;
+	} else if (dy > 0 && dx > 0) {	// bottom right of ball
+		float a = dy / dx;
+		a = atan2(dy, dx);		
+		v.x = -(cos((a)) * dist);
+		v.y = -(sin((a)) * dist);
+	}
+	body->SetLinearVelocity(v);
 	flinging = false;
 }
 

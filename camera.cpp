@@ -43,12 +43,12 @@ int CCamera::y2r(float32 ay) {
 	return int(m2p(ay) + y);
 }
 
-int CCamera::x2a(float32 rx) {
-	return int(m2p(rx) - x);
+float32 CCamera::x2a(float32 rx) {
+	return (p2m(rx) - x);
 }
 
-int CCamera::y2a(float32 ry) {
-	return int(m2p(ry) - y);
+float32 CCamera::y2a(float32 ry) {
+	return (p2m(ry) - y);
 }
 
 float32 CCamera::m2p(float32 p) {
