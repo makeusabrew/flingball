@@ -186,8 +186,13 @@ int mainGame(int argc, char* args[]) {
 	//box2d bits
 	
 	level = new CLevel;
+	if (argc > 1) {
+		std::string str = args[1];
+		level->loadDataFromFile("data/maps/"+str+".lvl");	
+	} else {
+		level->loadDataFromFile("data/maps/1.lvl");	
+	}
 	
-	level->loadDataFromFile("data/maps/1.lvl");	
 
 	CBall *ball;
 	ball = new CBall(level->getStartPoint());
