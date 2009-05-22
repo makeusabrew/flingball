@@ -89,5 +89,6 @@ class CLevel;
 extern SDL_Surface *screen;
 extern CCamera camera;
 extern CLevel* level;
+extern bool grounded;
 
 #endif

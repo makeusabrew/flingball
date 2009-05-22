@@ -98,7 +98,11 @@ void CBall::render() {
 	int dy = camera.y2r(position.y);
 	int dr = camera.m2p(r);
 	if (!flinging) {
-		circleRGBA(screen, dx, dy, dr, 0, 0, 0, 255);
+		if (grounded) {
+			circleRGBA(screen, dx, dy, dr, 0, 0, 255, 255);
+		} else {
+			circleRGBA(screen, dx, dy, dr, 0, 0, 0, 255);
+		}
 	} else {
 		circleRGBA(screen, dx, dy, dr, 128, 10, 0, 255);
 	}

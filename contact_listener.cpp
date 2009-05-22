@@ -11,6 +11,7 @@
 //
 #include <sstream>
 #include <iostream>
+#include "globals.h"
 #include "contact_listener.h"
 
 void ContactListener::Add(const b2ContactPoint* point) {
@@ -18,11 +19,11 @@ void ContactListener::Add(const b2ContactPoint* point) {
 }
  
 void ContactListener::Persist(const b2ContactPoint* point) {
-	std::cout << "persist" << std::endl;
+	grounded = true;
 }
  
 void ContactListener::Remove(const b2ContactPoint* point) {
-	std::cout << "remove" << std::endl;
+	grounded = false;
 }
  
 void ContactListener::Result(const b2ContactResult* point) {
