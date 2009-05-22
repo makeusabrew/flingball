@@ -15,6 +15,7 @@
 
 #include "level.h"
 #include "camera.h"
+#include "contact_listener.h"
 
 using namespace std;
 
@@ -138,6 +139,8 @@ void CLevel::createWorld() {
 
 	// Construct a world object, which will hold and simulate the rigid bodies.
 	world = new b2World(worldAABB, gravity, true);	// last param is doSleep
+	
+	world->SetContactListener(new ContactListener());
 	
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(0.0f, 0.0f);
