@@ -24,6 +24,18 @@ CLevel::CLevel() {
 	w = h = 0;
 	x = y = 0;
 	cLevel = 0;
+	
+	b2AABB worldAABB;
+	worldAABB.lowerBound.Set(-100.0f, -100.0f);
+	worldAABB.upperBound.Set(10000.0f, 10000.0f);
+
+	// Define the gravity vector.
+	b2Vec2 gravity(0.0f, 10.0f);
+
+	// Construct a world object, which will hold and simulate the rigid bodies.
+	world = new b2World(worldAABB, gravity, true);	// last param is doSleep
+	
+	world->SetContactListener(new ContactListener());
 }
 
 CLevel::~CLevel() {
@@ -39,7 +51,48 @@ bool CLevel::loadDataFromFile(string file) {
 	fin >> w >> h;                          // next is world max dimensions
 	fin >> startX >> startY;        // ball start coordinates
 	
-	createWorld();
+	b2BodyDef bodyDef;
+	bodyDef.position.Set(0.0f, 0.0f);
+	worldStaticBody = world->CreateBody(&bodyDef);
+	
+	// now set up our extreme four walls
+	
+	// ceiling
+	b2PolygonDef bounds;
+	bounds.vertexCount = 4;
+	bounds.friction = WORLD_BOUNDARY_FRICTION;
+	bounds.vertices[0].Set(getLeftBound(), getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[1].Set(getRightBound(),getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[2].Set(getRightBound(),getTopBound());
+	bounds.vertices[3].Set(getLeftBound(),getTopBound());
+	worldStaticBody->CreateShape(&bounds);
+	
+	// left wall
+	bounds.vertexCount = 4;
+	bounds.friction = WORLD_BOUNDARY_FRICTION;
+	bounds.vertices[0].Set(getLeftBound() - WORLD_BOUNDARY_THICKNESS, getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[1].Set(getLeftBound(), getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[2].Set(getLeftBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[3].Set(getLeftBound() - WORLD_BOUNDARY_THICKNESS,getBottomBound() + WORLD_BOUNDARY_THICKNESS);
+	worldStaticBody->CreateShape(&bounds);
+	
+	// right wall
+	bounds.vertexCount = 4;
+	bounds.friction = WORLD_BOUNDARY_FRICTION;
+	bounds.vertices[0].Set(getRightBound(), getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[1].Set(getRightBound() + WORLD_BOUNDARY_THICKNESS, getTopBound() - WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[2].Set(getRightBound() + WORLD_BOUNDARY_THICKNESS,getBottomBound() + WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[3].Set(getRightBound(), getBottomBound() + WORLD_BOUNDARY_THICKNESS);
+	worldStaticBody->CreateShape(&bounds);
+	
+	// bottom wall
+	bounds.vertexCount = 4;
+	bounds.friction = WORLD_BOUNDARY_FRICTION;
+	bounds.vertices[0].Set(getLeftBound(), getBottomBound());	// 0.2f at time of writing = 10px
+	bounds.vertices[1].Set(getRightBound(),getBottomBound());
+	bounds.vertices[2].Set(getRightBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
+	bounds.vertices[3].Set(getLeftBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
+	worldStaticBody->CreateShape(&bounds);
 	
 	// now pony up the rest of the bodies!
 	
@@ -137,61 +190,7 @@ CPath* CLevel::getPaths() {
 }
 
 void CLevel::createWorld() {
-	b2AABB worldAABB;
-	worldAABB.lowerBound.Set(getLeftBound() - 10.0f, getTopBound() - 10.0f);
-	worldAABB.upperBound.Set(getRightBound() + 10.0f, getBottomBound() + 10.0f);
-
-	// Define the gravity vector.
-	b2Vec2 gravity(0.0f, 10.0f);
-
-	// Construct a world object, which will hold and simulate the rigid bodies.
-	world = new b2World(worldAABB, gravity, true);	// last param is doSleep
-	
-	world->SetContactListener(new ContactListener());
-	
-	b2BodyDef bodyDef;
-	bodyDef.position.Set(0.0f, 0.0f);
-	bodyDef.angularDamping = 2.0f;
-	worldStaticBody = world->CreateBody(&bodyDef);
-	
-	// now set up our extreme four walls
-	
-	// ceiling
-	b2PolygonDef bounds;
-	bounds.vertexCount = 4;
-	bounds.friction = WORLD_BOUNDARY_FRICTION;
-	bounds.vertices[0].Set(getLeftBound(), getTopBound() - WORLD_BOUNDARY_THICKNESS);
-	bounds.vertices[1].Set(getRightBound(),getTopBound() - WORLD_BOUNDARY_THICKNESS);
-	bounds.vertices[2].Set(getRightBound(),getTopBound());
-	bounds.vertices[3].Set(getLeftBound(),getTopBound());
-	worldStaticBody->CreateShape(&bounds);
-	
-	// left wall
-	bounds.vertexCount = 4;
-	bounds.friction = WORLD_BOUNDARY_FRICTION;
-	bounds.vertices[0].Set(getLeftBound() - WORLD_BOUNDARY_THICKNESS, getTopBound() - WORLD_BOUNDARY_THICKNESS);
-	bounds.vertices[1].Set(getLeftBound(), getTopBound() - WORLD_BOUNDARY_THICKNESS);
-	bounds.vertices[2].Set(getLeftBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
-	bounds.vertices[3].Set(getLeftBound() - WORLD_BOUNDARY_THICKNESS,getBottomBound() + WORLD_BOUNDARY_THICKNESS);
-	worldStaticBody->CreateShape(&bounds);
-	
-	// right wall
-	bounds.vertexCount = 4;
-	bounds.friction = WORLD_BOUNDARY_FRICTION;
-	bounds.vertices[0].Set(getRightBound(), getTopBound() - WORLD_BOUNDARY_THICKNESS);
-	bounds.vertices[1].Set(getRightBound() + WORLD_BOUNDARY_THICKNESS, getTopBound() - WORLD_BOUNDARY_THICKNESS);
-	bounds.vertices[2].Set(getRightBound() + WORLD_BOUNDARY_THICKNESS,getBottomBound() + WORLD_BOUNDARY_THICKNESS);
-	bounds.vertices[3].Set(getRightBound(), getBottomBound() + WORLD_BOUNDARY_THICKNESS);
-	worldStaticBody->CreateShape(&bounds);
-	
-	// bottom wall
-	bounds.vertexCount = 4;
-	bounds.friction = WORLD_BOUNDARY_FRICTION;
-	bounds.vertices[0].Set(getLeftBound(), getBottomBound());	// 0.2f at time of writing = 10px
-	bounds.vertices[1].Set(getRightBound(),getBottomBound());
-	bounds.vertices[2].Set(getRightBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
-	bounds.vertices[3].Set(getLeftBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
-	worldStaticBody->CreateShape(&bounds);
+	// deprecated
 }
 
 void CLevel::setLevel(int l) {
@@ -208,6 +207,9 @@ bool CLevel::loadNextLevel() {
 	osstream << cLevel;
 	std::string string = osstream.str();
 	
+	world->DestroyBody(worldStaticBody);
+	worldStaticBody = NULL;
 	// load the next level
+	loadDataFromFile("data/maps/"+string+".lvl");
 	return true;
 }

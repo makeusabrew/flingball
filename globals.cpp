@@ -275,6 +275,15 @@ int mainGame(int argc, char* args[]) {
 		*********************/
 		level->world->Step(timeStep, iterations);
 		
+		if (ball->isAtGoal() && ball->isStationary()) {
+			// hooray! level complete
+			if (level->loadNextLevel()) {
+				cout << ball->getFlings() << " " << ball->getBounces() << endl;
+				ball->reset(level->getStartPoint());
+				camera.setViewport(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_W, VIEWPORT_H);
+			}
+		}
+		
 		if (ball->cameraX() < (VIEWPORT_X + CAMERA_MOVE_THRESHOLD)) {
 			int ox = (VIEWPORT_X + CAMERA_MOVE_THRESHOLD) - ball->cameraX();
 			camera.translate(ox, 0);
@@ -289,15 +298,6 @@ int mainGame(int argc, char* args[]) {
 		} else if (ball->cameraY() > (VIEWPORT_H - CAMERA_MOVE_THRESHOLD)) {
 			int oy = ball->cameraY() - (VIEWPORT_H - CAMERA_MOVE_THRESHOLD);
 			camera.translate(0, -oy);
-		}
-		
-		if (ball->isAtGoal() && ball->isStationary()) {
-			// hooray! level complete
-			if (level->loadNextLevel()) {
-				cout << ball->getFlings() << " " << ball->getBounces() << endl;
-				ball->reset(level->getStartPoint());
-				camera.setViewport(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_W, VIEWPORT_H);
-			}
 		}
 		
 		
