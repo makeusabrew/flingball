@@ -30,6 +30,11 @@ class CLevel {
 		CPath *getPaths();
 		void createWorld();
 		
+		void setLevel(int);
+		int getLevel();
+		
+		bool loadNextLevel();
+		
 		b2World *world;
 		
 	private:
@@ -37,6 +42,9 @@ class CLevel {
 		int w;
 		int h;
 		int endShapeIndex;
+		
+		int cLevel;
+		
 		float32 x;
 		float32 y;
 		float32 startX;

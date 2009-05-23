@@ -36,6 +36,20 @@ class CBall {
 		int cameraY();
 		
 		b2Body* getBody();
+		
+		bool isStationary();
+		bool isAtGoal();
+		
+		void setAtGoal(bool);
+		
+		void reset(b2Vec2);
+		
+		void doRollingSimulation();
+		
+		int getBounces();
+		int getFlings();
+		
+		void addBounce();
 
 	private:
 		float x;
@@ -54,7 +68,12 @@ class CBall {
 		int fX;	// fling X
 		int fY;	// fling Y
 		
+		bool atGoal;
+		
 		b2Body* body;
+		
+		int flings;
+		int bounces;
 };
 		
 #endif

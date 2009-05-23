@@ -15,6 +15,7 @@
 #include "globals.h"
 #include "camera.h"
 #include "level.h"
+#include "data.h"
 #include <SDL/SDL_gfxPrimitives.h>
 
 using namespace std;
@@ -27,22 +28,39 @@ CBall::CBall(b2Vec2 p) {
 	vx = 0;
 	vy = 0;
 	cr = cg = cb = 0;
+	flings = bounces = 0;
 	flinging = false;
+	atGoal = false;
+	
+	CData* data = new CData();
+	data->type = DATA_BALL;
+	data->ball = this;
 	
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(p.x, p.y);
-	bodyDef.angularDamping = 0.75f;
+	bodyDef.angularDamping = 0.1f;
 	body = level->world->CreateBody(&bodyDef);
 	
 	b2CircleDef shapeDef;
 	shapeDef.radius = r;
-	//shapeDef.localPosition.Set(r/2.0f, r/2.0f);	// this basically means where is the X / Y offset. we make it the middle of the ball
 	
 	shapeDef.density = 1.0f;
-	shapeDef.friction = 0.2f;
+	shapeDef.friction = 0.3f;
 	shapeDef.restitution = 0.6f;
+	shapeDef.userData = data;
 	body->CreateShape(&shapeDef);
 	body->SetMassFromShapes();
+}
+
+void CBall::reset(b2Vec2 p) {
+	b2Vec2 v;
+	v.x = 0;
+	v.y = 0;
+	body->SetXForm(p, 0.0f);
+	body->SetLinearVelocity(v);
+	body->SetAngularVelocity(0.0f);
+	flings = 0;
+	bounces = 0;
 }
 
 CBall::~CBall() {
@@ -143,8 +161,8 @@ void CBall::stopFling(int mx, int my) {
 		body->WakeUp();
 	}
 	
-	if (dist > 150) {
-		dist = 150;
+	if (dist > 180) {
+		dist = 180;
 	}
 	dist *= 0.15;
 	
@@ -175,6 +193,7 @@ void CBall::stopFling(int mx, int my) {
 	}
 	body->SetLinearVelocity(v);
 	flinging = false;
+	flings ++;
 }
 
 bool CBall::isFlinging() {
@@ -197,4 +216,45 @@ int CBall::cameraX() {
 int CBall::cameraY() {
 	b2Vec2 position = body->GetPosition();
 	return camera.y2r(position.y);
+}
+
+bool CBall::isStationary() {
+	b2Vec2 v = body->GetLinearVelocity();
+	if (abs(v.x) < 0.05 && abs(v.y) < 0.05) {
+		return true;
+	}
+	return false;
+}
+
+void CBall::setAtGoal(bool goal) {
+	atGoal = goal;
+}
+
+bool CBall::isAtGoal() {
+	return atGoal;
+}
+
+void CBall::doRollingSimulation() {
+	float32 v = body->GetAngularVelocity();
+	if (v > 0) {
+		v -= BALL_ROLLING_FRICTION;
+	} else if (v < 0) {
+		v += BALL_ROLLING_FRICTION;
+	}
+	if (abs(v) <= BALL_ROLLING_FRICTION) {
+		v = 0.0f;
+	}
+	body->SetAngularVelocity(v);
+}
+
+void CBall::addBounce() {
+	bounces ++;
+}
+
+int CBall::getBounces() {
+	return bounces;
+}
+
+int CBall::getFlings() {
+	return flings;
 }

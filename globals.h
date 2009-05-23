@@ -56,6 +56,12 @@ const float32 MIN_METRES_TO_PIXELS = 20.0f;
 const float32 WORLD_BOUNDARY_FRICTION = 0.1f;
 const float32 WORLD_BOUNDARY_THICKNESS = 0.5f;
 
+const float32 BALL_ROLLING_FRICTION = 0.03f;
+
+#define DATA_STATIC 0
+#define DATA_END_POINT 1
+#define DATA_BALL 2
+
 
 #ifndef PI
 #define PI 3.14159265

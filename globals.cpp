@@ -40,18 +40,6 @@ int mainEditor(int argc, char* args[]) {
 	
 	int quit = 0;
 	
-	b2AABB worldAABB;
-	worldAABB.lowerBound.Set(-100.0f, -100.0f);
-	worldAABB.upperBound.Set(100.0f, 100.0f);
-
-	// Define the gravity vector.
-	b2Vec2 gravity(0.0f, -10.0f);
-
-	// Do we want to let bodies sleep?
-	bool doSleep = true;
-
-	// Construct a world object, which will hold and simulate the rigid bodies.
-	b2World world(worldAABB, gravity, doSleep);
 	
 	// SDL init
 	cout << "Starting up...(" << argc << ")" << endl;
@@ -188,9 +176,11 @@ int mainGame(int argc, char* args[]) {
 	level = new CLevel;
 	if (argc > 1) {
 		std::string str = args[1];
-		level->loadDataFromFile("data/maps/"+str+".lvl");	
+		level->loadDataFromFile("data/maps/"+str+".lvl");
+		level->setLevel(atoi(str.c_str()));
 	} else {
 		level->loadDataFromFile("data/maps/1.lvl");	
+		level->setLevel(1);
 	}
 	
 
@@ -233,7 +223,7 @@ int mainGame(int argc, char* args[]) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						
 						// do some shit based on the fact the mouse has been pressed
-						if (ball->isRelPointInside(event.button.x, event.button.y)) {
+						if (ball->isRelPointInside(event.button.x, event.button.y) && ball->isStationary()) {
 							ball->startFling(event.button.x, event.button.y);
 						}
 						
@@ -299,6 +289,15 @@ int mainGame(int argc, char* args[]) {
 		} else if (ball->cameraY() > (VIEWPORT_H - CAMERA_MOVE_THRESHOLD)) {
 			int oy = ball->cameraY() - (VIEWPORT_H - CAMERA_MOVE_THRESHOLD);
 			camera.translate(0, -oy);
+		}
+		
+		if (ball->isAtGoal() && ball->isStationary()) {
+			// hooray! level complete
+			if (level->loadNextLevel()) {
+				cout << ball->getFlings() << " " << ball->getBounces() << endl;
+				ball->reset(level->getStartPoint());
+				camera.setViewport(VIEWPORT_X, VIEWPORT_Y, VIEWPORT_W, VIEWPORT_H);
+			}
 		}
 		
 		

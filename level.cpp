@@ -11,17 +11,19 @@
 //
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <SDL/SDL_gfxPrimitives.h>
 
 #include "level.h"
 #include "camera.h"
 #include "contact_listener.h"
-
+#include "data.h"
 using namespace std;
 
 CLevel::CLevel() {
 	w = h = 0;
 	x = y = 0;
+	cLevel = 0;
 }
 
 CLevel::~CLevel() {
@@ -52,16 +54,21 @@ bool CLevel::loadDataFromFile(string file) {
 		
 		b2PolygonDef shapeDef;
 		shapeDef.vertexCount = numVertices;
+		
+		if (i == endShapeIndex) {
+			CData* data = new CData();
+			data->type = DATA_END_POINT;
+			shapeDef.userData = data;
+		}
 		for (int j = 0; j < numVertices; j++) {
 			float x;
 			float y;
 			fin >> x >> y;
 			shapeDef.vertices[j].Set(x, y);
 		}
-		worldStaticBody->CreateShape(&shapeDef);
+		worldStaticBody->CreateShape(&shapeDef);	
+		
 	}
-	
-	
 
 	fin.close();
 	return true;
@@ -144,6 +151,7 @@ void CLevel::createWorld() {
 	
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(0.0f, 0.0f);
+	bodyDef.angularDamping = 2.0f;
 	worldStaticBody = world->CreateBody(&bodyDef);
 	
 	// now set up our extreme four walls
@@ -184,4 +192,22 @@ void CLevel::createWorld() {
 	bounds.vertices[2].Set(getRightBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
 	bounds.vertices[3].Set(getLeftBound(),getBottomBound() + WORLD_BOUNDARY_THICKNESS);
 	worldStaticBody->CreateShape(&bounds);
+}
+
+void CLevel::setLevel(int l) {
+	cLevel = l;
+}
+
+int CLevel::getLevel() {
+	return cLevel;
+}
+
+bool CLevel::loadNextLevel() {
+	cLevel ++;
+	std::ostringstream osstream;
+	osstream << cLevel;
+	std::string string = osstream.str();
+	
+	// load the next level
+	return true;
 }
