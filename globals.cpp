@@ -27,7 +27,6 @@ using namespace std;
 //#include "sound.h"
 //----------------------------------------------------------
 //----------------------------------------------------------
-bool grounded;
 SDL_Surface *screen;
 CCamera camera;
 CLevel *level;

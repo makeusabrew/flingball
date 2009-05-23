@@ -116,11 +116,7 @@ void CBall::render() {
 	int dy = camera.y2r(position.y);
 	int dr = camera.m2p(r);
 	if (!flinging) {
-		if (grounded) {
-			circleRGBA(screen, dx, dy, dr, 0, 0, 255, 255);
-		} else {
-			circleRGBA(screen, dx, dy, dr, 0, 0, 0, 255);
-		}
+		circleRGBA(screen, dx, dy, dr, 0, 0, 0, 255);
 	} else {
 		circleRGBA(screen, dx, dy, dr, 128, 10, 0, 255);
 	}
@@ -184,12 +180,12 @@ void CBall::stopFling(int mx, int my) {
 	} else if (dy > 0 && dx < 0) {	// bottom left of ball
 		float a = (float)dy / (float)dx;
 		a = atan(a);
-		v.x = cos((a)) * dist;
-		v.y = sin((a)) * dist;
+		v.x = cos(a) * dist;
+		v.y = sin(a) * dist;
 	} else if (dy > 0 && dx > 0) {	// bottom right of ball
 		float a = atan2(dy, dx);		
-		v.x = -(cos((a)) * dist);
-		v.y = -(sin((a)) * dist);
+		v.x = -(cos(a) * dist);
+		v.y = -(sin(a) * dist);
 	}
 	body->SetLinearVelocity(v);
 	flinging = false;
