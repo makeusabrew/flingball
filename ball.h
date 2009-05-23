@@ -74,6 +74,10 @@ class CBall {
 		
 		int flings;
 		int bounces;
+		
+#ifdef DEBUG
+		b2Vec2 path[1024];
+#endif
 };
 		
 #endif

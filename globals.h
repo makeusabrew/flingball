@@ -53,7 +53,7 @@ const float32 MAX_METRES_TO_PIXELS = 100.0f;
 const float32 MIN_METRES_TO_PIXELS = 20.0f;
 // e.g. 1 metre = 50 pixels
 
-const float32 WORLD_BOUNDARY_FRICTION = 0.1f;
+const float32 WORLD_BOUNDARY_FRICTION = 0.5f;
 const float32 WORLD_BOUNDARY_THICKNESS = 0.5f;
 
 const float32 BALL_ROLLING_FRICTION = 0.03f;
