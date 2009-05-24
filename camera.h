@@ -24,8 +24,8 @@ class CCamera {
 		int x2r(float32);
 		int y2r(float32);
 		
-		float32 x2a(float32);	// these probably take ints to be honest...
-		float32 y2a(float32);
+		float32 x2a(int);
+		float32 y2a(int);
 		
 		float32 m2p(float32);
 		float32 p2m(float32);

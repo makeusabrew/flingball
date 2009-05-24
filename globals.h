@@ -62,6 +62,9 @@ const float32 BALL_ROLLING_FRICTION = 0.03f;
 #define DATA_END_POINT 1
 #define DATA_BALL 2
 
+#define E_READY 0
+#define E_SHAPING 1
+
 
 #ifndef PI
 #define PI 3.14159265
@@ -85,8 +88,8 @@ int mainGame(int argc, char* args[]);
 bool keyPressed(SDLKey key);
 
 typedef struct{
-	int x;
-	int y;
+	float32 x;
+	float32 y;
 } Point;
 
 class CCamera;

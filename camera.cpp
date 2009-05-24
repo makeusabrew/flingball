@@ -44,12 +44,12 @@ int CCamera::y2r(float32 ay) {
 	return int(m2p(ay) + y);
 }
 
-float32 CCamera::x2a(float32 rx) {
-	return (p2m(rx) - x);
+float32 CCamera::x2a(int rx) {
+	return (p2m(rx - x));
 }
 
-float32 CCamera::y2a(float32 ry) {
-	return (p2m(ry) - y);
+float32 CCamera::y2a(int ry) {
+	return (p2m(ry -y));
 }
 
 float32 CCamera::m2p(float32 p) {
@@ -57,7 +57,7 @@ float32 CCamera::m2p(float32 p) {
 }
 
 float32 CCamera::p2m(float32 p) {
-	return (p / scale);
+	return ((float32)p / scale);
 }
 
 void CCamera::zoomIn() {

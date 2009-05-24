@@ -25,6 +25,10 @@ class CPath {
 		bool createPoints(int);
 		Point getMinPoint();
 		Point getMaxPoint();
+		void lineToPoint(int, int);
+		void renderLastPoint();
+		Point getPoint(int);
+		int getLength();
 	private:
 		int colour;
 		int length;	// number of points

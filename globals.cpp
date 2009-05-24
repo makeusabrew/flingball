@@ -12,6 +12,8 @@
 
 #include <sstream>
 #include <iostream>
+#include <fstream>
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_framerate.h>
 #include <SDL/SDL_gfxPrimitives.h>
@@ -60,8 +62,8 @@ int mainEditor(int argc, char* args[]) {
 	SDL_WM_SetCaption("Fling Ball Editor", NULL);
 	cout << "Set Video mode " << EDITOR_SCREEN_WIDTH << "x" << EDITOR_SCREEN_HEIGHT << "x" << EDITOR_SCREEN_HEIGHT << " OK" << endl;
 	
-	CLevel *level;
-	level = new CLevel;
+	//CLevel *level;
+	//level = new CLevel;
 	
 	camera.setViewport(EDITOR_VIEWPORT_X, EDITOR_VIEWPORT_Y, EDITOR_VIEWPORT_W, EDITOR_VIEWPORT_H);
 	/**************
@@ -72,6 +74,25 @@ int mainEditor(int argc, char* args[]) {
 	
 	int mouseX = 0;
 	int mouseY = 0;
+	
+	int eState = E_READY;
+	
+	CPath paths[512];
+	int cPath = -1;
+	int numPaths = 0;
+	paths[cPath].createPoints(32);
+	
+	int w = 0;
+	int h = 0;
+	
+	float32 sX = 0;
+	float32 sY = 0;
+	
+	std::string sw = args[2];
+	w = (atoi(sw.c_str()));
+	
+	std::string sh = args[3];
+	h = (atoi(sh.c_str()));
 	while(!quit) {
 		// FPS
 		startTime = SDL_GetTicks();
@@ -89,18 +110,62 @@ int mainEditor(int argc, char* args[]) {
 					break;
 					
 				case SDL_MOUSEBUTTONDOWN:
-					if (event.button.button == SDL_BUTTON_LEFT) {						
-						
-					}
+					
 					break;
 					
 				case SDL_MOUSEBUTTONUP:
-					
+					if (event.button.button == SDL_BUTTON_LEFT) {
+						if (eState == E_SHAPING) {
+							// new vertex for this shape
+							paths[cPath].addPoint(event.button.x, event.button.y);
+						}						
+					}
 					break;
 								
 				case SDL_MOUSEMOTION:
 					mouseX = event.motion.x;
 					mouseY = event.motion.y;
+					break;
+					
+				case SDL_KEYDOWN:
+					switch(event.key.keysym.sym) {
+						case SDLK_s:
+							if (eState == E_SHAPING) {
+								eState = E_READY;
+							} else {
+								cPath ++;
+								paths[cPath].createPoints(32);
+								eState = E_SHAPING;
+								cout << "Shaping mode: shape index " << cPath << endl;
+							}
+							break;
+							
+						case SDLK_b:
+							sX = camera.x2a(mouseX);
+							sY = camera.y2a(mouseY);
+							cout << "Ball start point: " << sX << " " << sY << endl;
+							break;
+							
+						case SDLK_d:
+							// done
+							int numPaths = cPath+1;
+							ofstream fout;
+							fout.open("test.lvl");
+							fout << "Test Level" << endl;
+							fout << w << " " << h << endl;
+							fout << sX << " " << sY << endl;
+							fout << numPaths << endl;
+							fout << "1" << endl;
+							for (int i = 0; i < numPaths; i++) {
+								fout << paths[i].getLength()-1;
+								for (int j = 0; j < paths[i].getLength()-1; j++) {
+									Point p = paths[i].getPoint(j);
+									fout << " " << p.x << " " << p.y;
+								}
+								fout << endl;
+							}
+							fout.close();
+					}
 					break;
 			}
 		}
@@ -110,11 +175,51 @@ int mainEditor(int argc, char* args[]) {
 			break;
 		}
 		
+		if (keyPressed(SDLK_UP)) {
+			camera.translate(0, 1);
+		} else if (keyPressed(SDLK_DOWN)) {
+			camera.translate(0, -1);
+		}
+		
+		if (keyPressed(SDLK_LEFT)) {
+			camera.translate(1, 0);
+		} else if (keyPressed(SDLK_RIGHT)) {
+			camera.translate(-1, 0);
+		}
+		
+		if (keyPressed(SDLK_z)) {
+			camera.zoomOut();
+		} else if (keyPressed(SDLK_x)) {
+			camera.zoomIn();
+		}
+		
 		/********************
 		** rendering stuff **
 		********************/
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
+			
+		lineRGBA(screen, camera.x2r(0), camera.y2r(0), camera.x2r(w), camera.y2r(0), 0, 0, 0, 255);
+		lineRGBA(screen, camera.x2r(0), camera.y2r(h), camera.x2r(w), camera.y2r(h), 0, 0, 0, 255);
+		lineRGBA(screen, camera.x2r(0), camera.y2r(0), camera.x2r(0), camera.y2r(h), 0, 0, 0, 255);
+		lineRGBA(screen, camera.x2r(w), camera.y2r(0), camera.x2r(w), camera.y2r(h), 0, 0, 0, 255);
 		
+		for (int i = 0; i < cPath+1; i++) {
+			paths[i].render();
+			if (i == cPath && eState == E_SHAPING) {
+				paths[i].lineToPoint(mouseX, mouseY);
+			} else {
+				// finished
+				paths[i].renderLastPoint();
+			}
+		}
+		
+		int dx = camera.x2r(sX);
+		int dy = camera.y2r(sY);
+		int dr = camera.m2p(0.32f);
+		circleRGBA(screen, dx, dy, dr, 128, 10, 0, 255);
+		
+		
+			
 		SDL_Flip(screen);  // flip back buffer -> screen
 		
 		//SDL_framerateDelay(fpsman);
@@ -260,9 +365,9 @@ int mainGame(int argc, char* args[]) {
 				}
 			}
 		} else {
-			if (keyPressed(SDLK_LEFT)) {
+			if (keyPressed(SDLK_z)) {
 				camera.zoomOut();
-			} else if (keyPressed(SDLK_RIGHT)) {
+			} else if (keyPressed(SDLK_x)) {
 				camera.zoomIn();
 			}
 		}
