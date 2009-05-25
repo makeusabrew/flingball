@@ -17,6 +17,7 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_framerate.h>
 #include <SDL/SDL_gfxPrimitives.h>
+#include <SDL/SDL_ttf.h>
 #include "Include/Box2D.h"
 
 using namespace std;
@@ -262,6 +263,11 @@ int mainGame(int argc, char* args[]) {
 		cout << "Couldn't set " << SCREEN_WIDTH << "x" << SCREEN_HEIGHT << "x" << SCREEN_HEIGHT << "x" << SCREEN_BPP << ": " << SDL_GetError() << endl;
 		return 1;
 	}
+	
+	if (TTF_Init() < 0) {
+		return 1;
+	}
+	atexit(TTF_Quit);
 	//SDL_ShowCursor(SDL_DISABLE);  // get rid of cursor
 	SDL_WM_SetCaption("Fling Ball", NULL);
 	cout << "Set Video mode " << SCREEN_WIDTH << "x" << SCREEN_HEIGHT << "x" << SCREEN_HEIGHT << " OK" << endl;
@@ -271,11 +277,8 @@ int mainGame(int argc, char* args[]) {
 	/********************
 	** game init stuff **
 	********************/
-	//CWorld *world;  // define the world
-	//CEvent eventhandler;
-	//eventhandler.setPlayer(player);
 	
-	//box2d bits
+	TTF_Font* fnt = TTF_OpenFont("data/fonts/ATWOOD.ttf", 18);
 	
 	level = new CLevel;
 	if (argc > 1) {
@@ -372,8 +375,6 @@ int mainGame(int argc, char* args[]) {
 			}
 		}
 		
-		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
-		
 		/*********************
 		** game logic stuff **
 		*********************/
@@ -409,15 +410,22 @@ int mainGame(int argc, char* args[]) {
 		** rendering stuff **
 		********************/
 		
+		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
 		
-		//level->render();
-		//ball->render();
 		if (ball->isFlinging()) {
 			int x1 = ball->getFlingX();
 			int y1 = ball->getFlingY();
 			int x2 = mouseX;
 			int y2 = mouseY;
 			lineRGBA(screen, x1, y1, x2, y2, 128, 128, 255, 255);
+			
+			char buffer[80];
+			sprintf(buffer, "Power: %.0f%%", ball->getFlingStrength(mouseX, mouseY));
+			SDL_Color clrFg = {0,0,255,0};  // Blue ("Fg" is foreground)
+			SDL_Surface *sText = TTF_RenderText_Solid( fnt, buffer, clrFg );
+			SDL_Rect rcDest = {0,VIEWPORT_H-20,0,0};
+			SDL_BlitSurface( sText,NULL, screen,&rcDest );
+			SDL_FreeSurface( sText );
 		}
 		
 		level->render();
@@ -434,7 +442,7 @@ int mainGame(int argc, char* args[]) {
 	
 	delete ball;
 	delete level;
-
+	TTF_CloseFont(fnt);
 	cout << "Exiting..." << endl;
 	SDL_Quit();
 	cout << "Done." << endl;

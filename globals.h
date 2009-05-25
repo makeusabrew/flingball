@@ -58,6 +58,8 @@ const float32 WORLD_BOUNDARY_THICKNESS = 0.5f;
 
 const float32 BALL_ROLLING_FRICTION = 0.03f;
 
+const float32 MAX_FLING_DRAG = 180.0f;
+
 #define DATA_STATIC 0
 #define DATA_END_POINT 1
 #define DATA_BALL 2

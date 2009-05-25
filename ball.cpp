@@ -148,6 +148,19 @@ void CBall::startFling(int mx, int my) {
 
 //Ian was ear.
 
+float CBall::getFlingStrength(int mx, int my) {
+	int dx = mx-fX;
+	int dy = my-fY;
+	float dist = sqrt((dx*dx) + (dy*dy));	// this is the absolute distance the mouse was dragged. work on it
+	
+	if (dist > MAX_FLING_DRAG) {
+		dist = MAX_FLING_DRAG;
+	}
+	
+	float pc = (dist / MAX_FLING_DRAG) * 100.0f;
+	return pc;
+}
+
 void CBall::stopFling(int mx, int my) {
 	int dx = mx-fX;
 	int dy = my-fY;
@@ -157,8 +170,8 @@ void CBall::stopFling(int mx, int my) {
 		body->WakeUp();
 	}
 	
-	if (dist > 180) {
-		dist = 180;
+	if (dist > MAX_FLING_DRAG) {
+		dist = MAX_FLING_DRAG;
 	}
 	dist *= 0.15;
 	

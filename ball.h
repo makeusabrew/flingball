@@ -25,6 +25,7 @@ class CBall {
 		void setCoords(b2Vec2 p);
 		void startFling(int, int);
 		void stopFling(int, int);
+		float getFlingStrength(int, int);
 		
 		void setLinearVelocity(b2Vec2);
 		
