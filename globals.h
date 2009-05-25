@@ -66,6 +66,7 @@ const float32 MAX_FLING_DRAG = 180.0f;
 
 #define E_READY 0
 #define E_SHAPING 1
+#define E_MOVING 2
 
 
 #ifndef PI

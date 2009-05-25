@@ -21,12 +21,10 @@ CPath::CPath() {
 	min.y = 999999;
 	max.x = -999999;
 	max.y = -999999;
+	strErr = "";
 }
 
 CPath::~CPath() {
-	if (length) {
-		delete [] points;
-	}
 }
 
 void CPath::setColour(int c) {
@@ -40,16 +38,21 @@ bool CPath::isPolygon() {
 			(points[0].y == points[length-1].y));
 }
 
-bool CPath::createPoints(int num) {
-	length = num;
-	points = new Point[num];
-	return true;
-}
-
-bool CPath::addPoint(int px, int py) {
+bool CPath::addRelPoint(int px, int py) {
 	
 	points[cPoint].x = camera.x2a(px);
 	points[cPoint].y = camera.y2a(py);
+	
+	
+	std::cout << "added new vertex at " << points[cPoint].x << " " << points[cPoint].y << std::endl;
+	cPoint++;
+	return true;
+}
+
+bool CPath::addPoint(float32 px, float32 py) {
+	
+	points[cPoint].x = px;
+	points[cPoint].y = py;
 	
 	
 	std::cout << "added new vertex at " << points[cPoint].x << " " << points[cPoint].y << std::endl;
@@ -89,6 +92,13 @@ void CPath::lineToPoint(int px, int py) {
 	}
 }
 
+void CPath::renderHalos() {
+	float32 r = 0.16f;
+	for (int i = 0; i < cPoint+1; i++) {
+		circleRGBA(screen, camera.x2r(points[i].x), camera.y2r(points[i].y), camera.m2p(r), 255, 0, 0, 255);
+	}
+}
+
 Point CPath::getMinPoint() {
 	return min;
 }
@@ -99,4 +109,16 @@ Point CPath::getMaxPoint() {
 
 void CPath::renderLastPoint() {
 	lineRGBA(screen, camera.x2r(points[cPoint-1].x), camera.y2r(points[cPoint-1].y), camera.x2r(points[0].x), camera.y2r(points[0].y), 0, 0, 0, 255);
+}
+
+std::string CPath::getValidationError() {
+	return strErr;
+}
+
+bool CPath::isValid() {
+	if (cPoint < 3) {
+		strErr = "Too few points";
+		return false;
+	}
+	return true;
 }

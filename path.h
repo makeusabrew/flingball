@@ -19,7 +19,8 @@ class CPath {
 		CPath();
 		~CPath();
 		void setColour(int);
-		bool addPoint(int, int);
+		bool addPoint(float32, float32);
+		bool addRelPoint(int, int);
 		void render();
 		bool isPolygon();
 		bool createPoints(int);
@@ -29,13 +30,17 @@ class CPath {
 		void renderLastPoint();
 		Point getPoint(int);
 		int getLength();
+		bool isValid();
+		std::string getValidationError();
+		void renderHalos();
 	private:
 		int colour;
 		int length;	// number of points
 		int cPoint;
-		Point* points;
+		Point points[32];
 		Point min;
 		Point max;
+		std::string strErr;
 };
 
 #endif

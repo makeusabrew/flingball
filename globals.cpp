@@ -67,6 +67,8 @@ int mainEditor(int argc, char* args[]) {
 	//level = new CLevel;
 	
 	camera.setViewport(EDITOR_VIEWPORT_X, EDITOR_VIEWPORT_Y, EDITOR_VIEWPORT_W, EDITOR_VIEWPORT_H);
+	
+	camera.translateTo(10, 10);	// this offsets the camera by 10 pixels so we can see the top / left of the world
 	/**************
 	** game loop **
 	**************/
@@ -79,9 +81,8 @@ int mainEditor(int argc, char* args[]) {
 	int eState = E_READY;
 	
 	CPath paths[512];
-	int cPath = -1;
+	int cPath = 0;
 	int numPaths = 0;
-	paths[cPath].createPoints(32);
 	
 	int w = 0;
 	int h = 0;
@@ -89,11 +90,37 @@ int mainEditor(int argc, char* args[]) {
 	float32 sX = 0;
 	float32 sY = 0;
 	
-	std::string sw = args[2];
-	w = (atoi(sw.c_str()));
+	string title = "Test Level";
 	
-	std::string sh = args[3];
-	h = (atoi(sh.c_str()));
+	int endShape = 1;
+	
+	if (strcmp(args[2], "--load") == 0) {
+		// mm k, load instead
+		ifstream fin;
+		fin.open(args[3]);
+		getline(fin, title);    // first line is title  
+		fin >> w >> h;
+		fin >> sX >> sY;
+		fin >> numPaths;
+		fin >> endShape;
+		for (int i = 0; i < numPaths; i++) {
+			int length = 0;
+			fin >> length;
+			for (int j = 0; j < length; j++) {
+				float x = 0;
+				float y = 0;
+				fin >> x >> y;
+				paths[i].addPoint(x, y);
+			}
+		}
+		fin.close();
+	} else {
+		std::string sw = args[2];
+		w = (atoi(sw.c_str()));
+		
+		std::string sh = args[3];
+		h = (atoi(sh.c_str()));
+	}
 	while(!quit) {
 		// FPS
 		startTime = SDL_GetTicks();
@@ -118,8 +145,8 @@ int mainEditor(int argc, char* args[]) {
 					if (event.button.button == SDL_BUTTON_LEFT) {
 						if (eState == E_SHAPING) {
 							// new vertex for this shape
-							paths[cPath].addPoint(event.button.x, event.button.y);
-						}						
+							paths[cPath].addRelPoint(event.button.x, event.button.y);
+						}
 					}
 					break;
 								
@@ -132,12 +159,23 @@ int mainEditor(int argc, char* args[]) {
 					switch(event.key.keysym.sym) {
 						case SDLK_s:
 							if (eState == E_SHAPING) {
-								eState = E_READY;
+								cout << "Press F to finish shaping..." << endl;
 							} else {
-								cPath ++;
-								paths[cPath].createPoints(32);
+								numPaths ++;	// add a path
+								cPath = numPaths - 1;	// the current path we're editing is the last (cos it's new)
 								eState = E_SHAPING;
 								cout << "Shaping mode: shape index " << cPath << endl;
+							}
+							break;
+							
+						case SDLK_f:
+							if (eState == E_SHAPING) {
+								if (paths[cPath].isValid()) {
+									eState = E_READY;
+									cout << "Finished shape " << cPath << endl;
+								} else {
+									cout << paths[cPath].getValidationError() << endl;
+								}
 							}
 							break;
 							
@@ -147,9 +185,14 @@ int mainEditor(int argc, char* args[]) {
 							cout << "Ball start point: " << sX << " " << sY << endl;
 							break;
 							
+						case SDLK_m:
+							if (eState == E_READY) {
+								cout << "Move mode" << endl;
+								eState = E_MOVING;
+							}
+							
 						case SDLK_d:
 							// done
-							int numPaths = cPath+1;
 							ofstream fout;
 							fout.open("test.lvl");
 							fout << "Test Level" << endl;
@@ -177,15 +220,15 @@ int mainEditor(int argc, char* args[]) {
 		}
 		
 		if (keyPressed(SDLK_UP)) {
-			camera.translate(0, 1);
+			camera.translate(0, camera.m2p(0.25));
 		} else if (keyPressed(SDLK_DOWN)) {
-			camera.translate(0, -1);
+			camera.translate(0, camera.m2p(-0.25));
 		}
 		
 		if (keyPressed(SDLK_LEFT)) {
-			camera.translate(1, 0);
+			camera.translate(camera.m2p(0.25), 0);
 		} else if (keyPressed(SDLK_RIGHT)) {
-			camera.translate(-1, 0);
+			camera.translate(camera.m2p(-0.25), 0);
 		}
 		
 		if (keyPressed(SDLK_z)) {
@@ -204,13 +247,17 @@ int mainEditor(int argc, char* args[]) {
 		lineRGBA(screen, camera.x2r(0), camera.y2r(0), camera.x2r(0), camera.y2r(h), 0, 0, 0, 255);
 		lineRGBA(screen, camera.x2r(w), camera.y2r(0), camera.x2r(w), camera.y2r(h), 0, 0, 0, 255);
 		
-		for (int i = 0; i < cPath+1; i++) {
+		for (int i = 0; i < numPaths; i++) {
 			paths[i].render();
-			if (i == cPath && eState == E_SHAPING) {
+			if (eState == E_SHAPING && i == cPath) {
 				paths[i].lineToPoint(mouseX, mouseY);
 			} else {
 				// finished
 				paths[i].renderLastPoint();
+			}
+			
+			if (eState == E_MOVING) {
+				paths[i].renderHalos();
 			}
 		}
 		
@@ -418,10 +465,10 @@ int mainGame(int argc, char* args[]) {
 		ball->render();
 		
 		//sprintf(strBuffer, "Level: %s (%s)", level->getTitle().c_str(), level->getTimeSpentString().c_str());
-		sprintf(strBuffer, "Level: %s", level->getTitle().c_str());
+		sprintf(strBuffer, "%s", level->getTitle().c_str());
 		SDL_Color clrFg = {0,0,255,0};  // Blue ("Fg" is foreground)
 		SDL_Surface *sText = TTF_RenderText_Solid( fnt, strBuffer, clrFg );
-		SDL_Rect rcDest = {0,VIEWPORT_H-60,0,0};
+		SDL_Rect rcDest = {2,VIEWPORT_H-60,0,0};
 		SDL_BlitSurface( sText,NULL, screen,&rcDest );
 		SDL_FreeSurface( sText );
 		
