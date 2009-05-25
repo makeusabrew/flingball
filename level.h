@@ -35,6 +35,8 @@ class CLevel {
 		
 		bool loadNextLevel();
 		
+		std::string getTimeSpentString();
+		
 		b2World *world;
 		
 	private:
@@ -44,6 +46,8 @@ class CLevel {
 		int endShapeIndex;
 		
 		int cLevel;
+		
+		int timeStart;	// milliseconds
 		
 		float32 x;
 		float32 y;

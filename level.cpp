@@ -131,6 +131,10 @@ string CLevel::getTitle() {
 	return title;
 }
 
+string CLevel::getTimeSpentString() {
+	return "10 secs";
+}
+
 int CLevel::getLeftBound() {
 	return (x);
 }

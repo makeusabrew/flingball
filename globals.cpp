@@ -245,6 +245,7 @@ int mainGame(int argc, char* args[]) {
 	int fps;
 	
 	int quit = 0;
+	char strBuffer[80];
 	
 	// SDL init
 	cout << "Starting up...(" << argc << ")" << endl;
@@ -412,6 +413,23 @@ int mainGame(int argc, char* args[]) {
 		
 		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 255, 255, 255));  // white layer
 		
+		
+		level->render();
+		ball->render();
+		
+		//sprintf(strBuffer, "Level: %s (%s)", level->getTitle().c_str(), level->getTimeSpentString().c_str());
+		sprintf(strBuffer, "Level: %s", level->getTitle().c_str());
+		SDL_Color clrFg = {0,0,255,0};  // Blue ("Fg" is foreground)
+		SDL_Surface *sText = TTF_RenderText_Solid( fnt, strBuffer, clrFg );
+		SDL_Rect rcDest = {0,VIEWPORT_H-60,0,0};
+		SDL_BlitSurface( sText,NULL, screen,&rcDest );
+		SDL_FreeSurface( sText );
+		
+		sprintf(strBuffer, "Flings: %d", ball->getFlings());
+		sText = TTF_RenderText_Solid( fnt, strBuffer, clrFg );
+		rcDest.y = VIEWPORT_H-40;
+		SDL_BlitSurface( sText,NULL, screen,&rcDest );
+		
 		if (ball->isFlinging()) {
 			int x1 = ball->getFlingX();
 			int y1 = ball->getFlingY();
@@ -419,17 +437,15 @@ int mainGame(int argc, char* args[]) {
 			int y2 = mouseY;
 			lineRGBA(screen, x1, y1, x2, y2, 128, 128, 255, 255);
 			
-			char buffer[80];
-			sprintf(buffer, "Power: %.0f%%", ball->getFlingStrength(mouseX, mouseY));
-			SDL_Color clrFg = {0,0,255,0};  // Blue ("Fg" is foreground)
-			SDL_Surface *sText = TTF_RenderText_Solid( fnt, buffer, clrFg );
-			SDL_Rect rcDest = {0,VIEWPORT_H-20,0,0};
+			
+			sprintf(strBuffer, "Power: %.0f%%", ball->getFlingStrength(mouseX, mouseY));
+			sText = TTF_RenderText_Solid( fnt, strBuffer, clrFg );
+			rcDest.y = VIEWPORT_H-20;
 			SDL_BlitSurface( sText,NULL, screen,&rcDest );
-			SDL_FreeSurface( sText );
+			
 		}
 		
-		level->render();
-		ball->render();
+		SDL_FreeSurface( sText );
 		
 		SDL_Flip(screen);  // flip back buffer -> screen
 		
