@@ -94,6 +94,9 @@ int mainEditor(int argc, char* args[]) {
 	
 	int endShape = 1;
 	
+	int moveShape = -1;
+	int moveVertex = -1;
+	
 	if (strcmp(args[2], "--load") == 0) {
 		// mm k, load instead
 		ifstream fin;
@@ -138,7 +141,27 @@ int mainEditor(int argc, char* args[]) {
 					break;
 					
 				case SDL_MOUSEBUTTONDOWN:
-					
+					if (event.button.button == SDL_BUTTON_LEFT) {
+						if (eState == E_MOVING) {
+							// find the poly. set move mode on it
+							for (int i = 0; i < numPaths; i++) {
+								if (paths[i].isPointCenter(event.button.x, event.button.y)) {
+									// moving centre of poly. great!
+									moveShape = i;
+									moveVertex = -1;	// no vertex, whole shape
+									cout << "moving entire shape, index " << moveShape << endl;
+									break;
+								} else {
+									int vTemp = paths[i].isPointInVertex(event.button.x, event.button.y);
+									if (vTemp > -1) {
+										moveShape = i;
+										moveVertex = vTemp;
+										cout << "moving shape " << moveShape << ", vertex " << moveVertex << endl;
+									}
+								}
+							}
+						}
+					}
 					break;
 					
 				case SDL_MOUSEBUTTONUP:
@@ -146,6 +169,10 @@ int mainEditor(int argc, char* args[]) {
 						if (eState == E_SHAPING) {
 							// new vertex for this shape
 							paths[cPath].addRelPoint(event.button.x, event.button.y);
+						} else if (eState == E_MOVING) {
+							// release move
+							moveShape = -1;
+							moveVertex = -1;
 						}
 					}
 					break;
@@ -176,6 +203,9 @@ int mainEditor(int argc, char* args[]) {
 								} else {
 									cout << paths[cPath].getValidationError() << endl;
 								}
+							} else if (eState == E_MOVING) {
+								eState = E_READY;
+								cout << "Finished move" << endl;
 							}
 							break;
 							
@@ -190,25 +220,31 @@ int mainEditor(int argc, char* args[]) {
 								cout << "Move mode" << endl;
 								eState = E_MOVING;
 							}
+							break;
 							
 						case SDLK_d:
 							// done
-							ofstream fout;
-							fout.open("test.lvl");
-							fout << "Test Level" << endl;
-							fout << w << " " << h << endl;
-							fout << sX << " " << sY << endl;
-							fout << numPaths << endl;
-							fout << "1" << endl;
-							for (int i = 0; i < numPaths; i++) {
-								fout << paths[i].getLength()-1;
-								for (int j = 0; j < paths[i].getLength()-1; j++) {
-									Point p = paths[i].getPoint(j);
-									fout << " " << p.x << " " << p.y;
+							if (eState == E_READY) {
+								cout << "Saving file..." << endl;
+								ofstream fout;
+								fout.open("test.lvl");
+								fout << "Test Level" << endl;
+								fout << w << " " << h << endl;
+								fout << sX << " " << sY << endl;
+								fout << numPaths << endl;
+								fout << "1" << endl;
+								for (int i = 0; i < numPaths; i++) {
+									fout << paths[i].getLength();
+									for (int j = 0; j < paths[i].getLength(); j++) {
+										Point p = paths[i].getPoint(j);
+										fout << " " << p.x << " " << p.y;
+									}
+									fout << endl;
 								}
-								fout << endl;
+								fout.close();
+								cout << "Done." << endl;
 							}
-							fout.close();
+							break;
 					}
 					break;
 			}
@@ -258,6 +294,14 @@ int mainEditor(int argc, char* args[]) {
 			
 			if (eState == E_MOVING) {
 				paths[i].renderHalos();
+				// got index?
+				if (i == moveShape) {
+					if (moveVertex == -1) {
+						paths[i].moveToRelPoint(mouseX, mouseY);
+					} else {
+						paths[i].moveVertexToRelPoint(moveVertex, mouseX, mouseY);
+					}
+				}
 			}
 		}
 		
