@@ -112,21 +112,29 @@ void CBall::render() {
 	b2Vec2 position = body->GetPosition();
 	float32 angle = body->GetAngle();
 		
-	int dx = camera.x2r(position.x);
-	int dy = camera.y2r(position.y);
-	int dr = camera.m2p(r);
-	if (!flinging) {
-		circleRGBA(screen, dx, dy, dr, 0, 0, 0, 255);
-	} else {
-		circleRGBA(screen, dx, dy, dr, 128, 10, 0, 255);
-	}
-	int lx = dx - cos((angle)) * dr;
-	int ly = dy - sin((angle)) * dr;
+	float32 dx = camera.x2r(position.x);
+	float32 dy = camera.y2r(position.y);
+	float32 dr = camera.m2p(r);
+
+	circleRGBA(screen, dx, dy, dr, 0, 0, 0, 255);
 	
-	int lx2 = dx + cos((angle)) * dr;
-	int ly2 = dy + sin((angle)) * dr;
+	float32 lx = dx - (cos(angle) * dr);
+	float32 ly = dy - (sin(angle) * dr);
 	
-	lineRGBA(screen, lx, ly, lx2, ly2, 0, 0, 0, 255);
+	float32 lx2 = dx + (cos(angle) * dr);
+	float32 ly2 = dy + (sin(angle) * dr);
+	
+	lineRGBA(screen, (int)lx, (int)ly, (int)lx2, (int)ly2, 0, 0, 0, 255);
+	
+	float32 oangle = angle - (deg2rad(90.0f));
+	
+	lx = dx - (cos(oangle) * dr);
+	ly = dy - (sin(oangle) * dr);
+	
+	lx2 = dx + (cos(oangle) * dr);
+	ly2 = dy + (sin(oangle) * dr);
+	
+	lineRGBA(screen, (int)lx, (int)ly, (int)lx2, (int)ly2, 0, 0, 0, 255);
 }
 
 bool CBall::setColour(int r, int g, int b) {
@@ -177,6 +185,8 @@ void CBall::stopFling(int mx, int my) {
 	
 	b2Vec2 v;
 	float32 av = 0.0f;
+	b2Vec2 position = body->GetPosition();
+	av = (camera.x2a(fX) - position.x)*100;
 	// okay, we need to work out which quadrant we're in
 	// just work clockwise, taking into account a few exceptions
 	if (dy > 0 && dx == 0) {	// straight up
@@ -195,15 +205,11 @@ void CBall::stopFling(int mx, int my) {
 		float a = (float)dy / (float)dx;
 		a = atan(a);
 		v.x = cos(a) * dist;
-		v.y = sin(a) * dist;
-		b2Vec2 position = body->GetPosition();
-		av = (camera.x2a(fX) - position.x)*100;
+		v.y = sin(a) * dist;		
 	} else if (dy > 0 && dx > 0) {	// bottom right of ball
 		float a = atan2(dy, dx);		
 		v.x = -(cos(a) * dist);
 		v.y = -(sin(a) * dist);
-		b2Vec2 position = body->GetPosition();
-		av = (camera.x2a(fX) - position.x)*100;
 	}
 	body->SetLinearVelocity(v);
 	body->SetAngularVelocity(av);

@@ -460,6 +460,17 @@ int mainGame(int argc, char* args[]) {
 				}
 			}
 		} else {
+			if (keyPressed(SDLK_UP)) {
+				camera.translate(0, camera.m2p(0.25));
+			} else if (keyPressed(SDLK_DOWN)) {
+				camera.translate(0, camera.m2p(-0.25));
+			}
+		
+			if (keyPressed(SDLK_LEFT)) {
+				camera.translate(camera.m2p(0.25), 0);
+			} else if (keyPressed(SDLK_RIGHT)) {
+				camera.translate(camera.m2p(-0.25), 0);
+			}
 			if (keyPressed(SDLK_z)) {
 				camera.zoomOut();
 			} else if (keyPressed(SDLK_x)) {
