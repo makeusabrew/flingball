@@ -24,6 +24,7 @@ CLevel::CLevel() {
 	w = h = 0;
 	x = y = 0;
 	cLevel = 0;
+	cBody = 0;
 	
 	b2AABB worldAABB;
 	worldAABB.lowerBound.Set(-100.0f, -100.0f);
@@ -108,6 +109,8 @@ bool CLevel::loadDataFromFile(string file) {
 		b2PolygonDef shapeDef;
 		shapeDef.vertexCount = numVertices;
 		
+		bool isStatic = true;	// eventually this will be read from file
+		
 		if (i == endShapeIndex) {
 			CData* data = new CData();
 			data->type = DATA_END_POINT;
@@ -119,8 +122,18 @@ bool CLevel::loadDataFromFile(string file) {
 			fin >> x >> y;
 			shapeDef.vertices[j].Set(x, y);
 		}
-		worldStaticBody->CreateShape(&shapeDef);	
-		
+		if (isStatic) {
+			worldStaticBody->CreateShape(&shapeDef);
+		} else {
+			b2BodyDef bodyDef;
+			bodyDef.position.Set(0.0f, 0.0f);
+			bodyDef.isBullet = true;
+			b2Body* body = world->CreateBody(&bodyDef);
+			shapeDef.density = 1.0f;
+			shapeDef.friction = 0.3f;
+			body->CreateShape(&shapeDef);
+			body->SetMassFromShapes();
+		}	
 	}
 
 	fin.close();
@@ -153,30 +166,39 @@ int CLevel::getBottomBound() {
 
 void CLevel::render() {
 	int sIndex = 0;	
-	for (b2Shape* s = worldStaticBody->GetShapeList(); s; s = s->GetNext()) {
-		b2PolygonShape* sh = (b2PolygonShape *)s;
-		int count = sh->GetVertexCount();
-
-		const b2Vec2* v = sh->GetVertices();
-		for (int i = 0; i < count; i++) {
-			int sx = camera.x2r(v[i].x);
-			int sy = camera.y2r(v[i].y);
-			int dx = 0;
-			int dy = 0;
-			if (i == count-1) {
-				dx = camera.x2r(v[0].x);
-				dy = camera.y2r(v[0].y);
-			} else {
-				dx = camera.x2r(v[i+1].x);
-				dy = camera.y2r(v[i+1].y);
+	for (b2Body* b = world->GetBodyList(); b; b = b->GetNext()) {
+		for (b2Shape* s = b->GetShapeList(); s; s = s->GetNext()) {
+			CData* data = (CData*)s->GetUserData();	
+			if (data && data->type == DATA_BALL) {
+				continue;
 			}
-			//if (i == endShapeIndex) {
-			//	lineRGBA(screen, sx, sy, dx, dy, 0, 0, 255, 255);
-			//} else {
-				lineRGBA(screen, sx, sy, dx, dy, 0, 0, 0, 255);
-			//}
+			b2PolygonShape* sh = (b2PolygonShape *)s;
+			int count = sh->GetVertexCount();
+	
+			const b2Vec2* v = sh->GetVertices();
+			
+			b2Vec2 o = b->GetPosition();
+			//float32 a = b->GetAngle();
+			for (int i = 0; i < count; i++) {
+				int sx = camera.x2r(o.x + v[i].x);
+				int sy = camera.y2r(o.y + v[i].y);
+				int dx = 0;
+				int dy = 0;
+				if (i == count-1) {
+					dx = camera.x2r(o.x + v[0].x);
+					dy = camera.y2r(o.y + v[0].y);
+				} else {
+					dx = camera.x2r(o.x + v[i+1].x);
+					dy = camera.y2r(o.y + v[i+1].y);
+				}
+				//if (i == endShapeIndex) {
+				//	lineRGBA(screen, sx, sy, dx, dy, 0, 0, 255, 255);
+				//} else {
+					lineRGBA(screen, sx, sy, dx, dy, 0, 0, 0, 255);
+				//}
+			}
+			sIndex++;	// bump up the index
 		}
-		sIndex++;	// bump up the index
 	}
 	
 }
@@ -211,6 +233,19 @@ bool CLevel::loadNextLevel() {
 	osstream << cLevel;
 	std::string string = osstream.str();
 	
+	/*
+	b2Body* node = world->GetBodyList();
+	while (node) {
+		b2Body* b = node;
+		node = node->GetNext();
+		b2Shape* s = b->GetShapeList();
+		CData* data = (CData*)s->GetUserData();	
+		if (data && data->type == DATA_BALL) {
+			continue;
+		}
+		world->DestroyBody(b);
+	}
+	*/
 	world->DestroyBody(worldStaticBody);
 	worldStaticBody = NULL;
 	// load the next level

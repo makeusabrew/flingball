@@ -46,6 +46,7 @@ class CLevel {
 		int endShapeIndex;
 		
 		int cLevel;
+		int cBody;
 		
 		int timeStart;	// milliseconds
 		
