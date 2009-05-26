@@ -92,11 +92,11 @@ void CPath::renderHalos() {
 	if (length) {
 		float32 r = 0.16f;
 		for (int i = 0; i < length; i++) {
-			circleRGBA(screen, camera.x2r(points[i].x), camera.y2r(points[i].y), camera.m2p(r), 255, 0, 0, 255);
+			circleRGBA(screen, camera.x2r(points[i].x), camera.y2r(points[i].y), 5, 255, 0, 0, 255);
 		}
 		float32 mx = left + ((right-left)/2.0);
 		float32 my = top + ((bottom-top)/2.0);
-		circleRGBA(screen, camera.x2r(mx), camera.y2r(my), camera.m2p(0.25f), 255, 0, 0, 255);
+		circleRGBA(screen, camera.x2r(mx), camera.y2r(my), 8, 255, 0, 0, 255);
 	}
 }
 
@@ -143,7 +143,7 @@ bool CPath::isPointCenter(int nx, int ny) {
 	
 	float32 mx = left + ((right-left)/2.0);
 	float32 my = top + ((bottom-top)/2.0);
-	float32 tolerance = 0.25f;
+	float32 tolerance = camera.p2m(8);
 	if (ax > (mx - tolerance) && ax < (mx + tolerance) &&	ay > (my - tolerance) && ay < (my + tolerance)) {
 		return true;
 	}
@@ -155,7 +155,7 @@ int CPath::isPointInVertex(int nx, int ny) {
 	float32 ax = camera.x2a(nx);
 	float32 ay = camera.y2a(ny);	
 	
-	float32 tolerance = 0.16f;
+	float32 tolerance = camera.p2m(5);
 	
 	for (int i = 0; i < length; i++ ) {
 		float32 mx = points[i].x;

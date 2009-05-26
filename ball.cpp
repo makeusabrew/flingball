@@ -176,6 +176,7 @@ void CBall::stopFling(int mx, int my) {
 	dist *= 0.15;
 	
 	b2Vec2 v;
+	float32 av = 0.0f;
 	// okay, we need to work out which quadrant we're in
 	// just work clockwise, taking into account a few exceptions
 	if (dy > 0 && dx == 0) {	// straight up
@@ -195,12 +196,17 @@ void CBall::stopFling(int mx, int my) {
 		a = atan(a);
 		v.x = cos(a) * dist;
 		v.y = sin(a) * dist;
+		b2Vec2 position = body->GetPosition();
+		av = (camera.x2a(fX) - position.x)*100;
 	} else if (dy > 0 && dx > 0) {	// bottom right of ball
 		float a = atan2(dy, dx);		
 		v.x = -(cos(a) * dist);
 		v.y = -(sin(a) * dist);
+		b2Vec2 position = body->GetPosition();
+		av = (camera.x2a(fX) - position.x)*100;
 	}
 	body->SetLinearVelocity(v);
+	body->SetAngularVelocity(av);
 	flinging = false;
 	flings ++;
 }
