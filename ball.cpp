@@ -247,6 +247,15 @@ bool CBall::isStationary() {
 	return false;
 }
 
+float CBall::distFromGoal() {
+	b2Vec2 p = body->GetPosition();
+	b2Vec2 l = level->getEndPosition();
+	float dx = p.x - l.x;
+	float dy = p.y - l.y;
+	float dist = sqrt((dx*dx) + (dy*dy));
+	return dist;
+}
+
 void CBall::setAtGoal(bool goal) {
 	atGoal = goal;
 }

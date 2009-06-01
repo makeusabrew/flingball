@@ -26,6 +26,9 @@ CLevel::CLevel() {
 	cLevel = 0;
 	cBody = 0;
 	
+	startX = startY = 0;
+	endX = endY = 0;
+	
 	b2AABB worldAABB;
 	worldAABB.lowerBound.Set(-100.0f, -100.0f);
 	worldAABB.upperBound.Set(10000.0f, 10000.0f);
@@ -51,6 +54,7 @@ bool CLevel::loadDataFromFile(string file) {
 	getline(fin, title);    // first line is title  
 	fin >> w >> h;                          // next is world max dimensions
 	fin >> startX >> startY;        // ball start coordinates
+	fin >> endX >> endY;	// end coords
 	
 	b2BodyDef bodyDef;
 	bodyDef.position.Set(0.0f, 0.0f);
@@ -251,4 +255,11 @@ bool CLevel::loadNextLevel() {
 	// load the next level
 	loadDataFromFile("data/maps/"+string+".lvl");
 	return true;
+}
+
+b2Vec2 CLevel::getEndPosition() {
+	b2Vec2 p;
+	p.x = endX;
+	p.y = endY;
+	return p;
 }

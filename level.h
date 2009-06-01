@@ -39,6 +39,8 @@ class CLevel {
 		
 		b2World *world;
 		
+		b2Vec2 getEndPosition();
+		
 	private:
 		int data;
 		int w;
@@ -54,6 +56,8 @@ class CLevel {
 		float32 y;
 		float32 startX;
 		float32 startY;
+		float32 endX;
+		float32 endY;
 		std::string title;
 		
 		b2Body *worldStaticBody;

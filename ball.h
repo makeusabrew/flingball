@@ -54,6 +54,8 @@ class CBall {
 		
 		void setGoalTime();
 		unsigned int timeAtGoal();
+		
+		float distFromGoal();
 
 	private:
 		float x;

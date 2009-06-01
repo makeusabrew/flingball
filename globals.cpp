@@ -90,6 +90,9 @@ int mainEditor(int argc, char* args[]) {
 	float32 sX = 0;
 	float32 sY = 0;
 	
+	float32 eX = 0;
+	float32 eY = 0;
+	
 	string title = "Test Level";
 	
 	int endShape = 1;
@@ -104,6 +107,7 @@ int mainEditor(int argc, char* args[]) {
 		getline(fin, title);    // first line is title  
 		fin >> w >> h;
 		fin >> sX >> sY;
+		fin >> eX >> eY;
 		fin >> numPaths;
 		fin >> endShape;
 		for (int i = 0; i < numPaths; i++) {
@@ -214,7 +218,12 @@ int mainEditor(int argc, char* args[]) {
 							sY = camera.y2a(mouseY);
 							cout << "Ball start point: " << sX << " " << sY << endl;
 							break;
-							
+						
+						case SDLK_e:
+							eX = camera.x2a(mouseX);
+							eY = camera.y2a(mouseY);
+							cout << "Level end point: " << eX << " " << eY << endl;
+							break;
 						case SDLK_m:
 							if (eState == E_READY) {
 								cout << "Move mode" << endl;
@@ -231,8 +240,9 @@ int mainEditor(int argc, char* args[]) {
 								fout << "Test Level" << endl;
 								fout << w << " " << h << endl;
 								fout << sX << " " << sY << endl;
+								fout << eX << " " << eY << endl;
 								fout << numPaths << endl;
-								fout << "1" << endl;
+								fout << "1234" << endl;
 								for (int i = 0; i < numPaths; i++) {
 									fout << paths[i].getLength();
 									for (int j = 0; j < paths[i].getLength(); j++) {
@@ -309,6 +319,11 @@ int mainEditor(int argc, char* args[]) {
 		int dy = camera.y2r(sY);
 		int dr = camera.m2p(0.32f);
 		circleRGBA(screen, dx, dy, dr, 128, 10, 0, 255);
+		
+		dx = camera.x2r(eX);
+		dy = camera.y2r(eY);
+		dr = camera.m2p(0.16f);
+		circleRGBA(screen, dx, dy, dr, 0, 10, 180, 255);
 		
 		
 			
@@ -520,7 +535,7 @@ int mainGame(int argc, char* args[]) {
 		ball->render();
 		
 		//sprintf(strBuffer, "Level: %s (%s)", level->getTitle().c_str(), level->getTimeSpentString().c_str());
-		sprintf(strBuffer, "%s", level->getTitle().c_str());
+		sprintf(strBuffer, "%s (%.0fm)", level->getTitle().c_str(), ball->distFromGoal());
 		SDL_Color clrFg = {0,0,255,0};  // Blue ("Fg" is foreground)
 		SDL_Surface *sText = TTF_RenderText_Solid( fnt, strBuffer, clrFg );
 		SDL_Rect rcDest = {2,VIEWPORT_H-60,0,0};
