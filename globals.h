@@ -68,6 +68,8 @@ const float32 MAX_FLING_DRAG = 180.0f;
 #define E_SHAPING 1
 #define E_MOVING 2
 
+#define BALL_GOAL_TIME 1500
+
 
 #ifndef PI
 #define PI 3.14159265

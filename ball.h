@@ -51,6 +51,9 @@ class CBall {
 		int getFlings();
 		
 		void addBounce();
+		
+		void setGoalTime();
+		unsigned int timeAtGoal();
 
 	private:
 		float x;
@@ -75,6 +78,8 @@ class CBall {
 		
 		int flings;
 		int bounces;
+		
+		unsigned int goalTime;
 		
 #ifdef DEBUG
 		b2Vec2 path[1024];

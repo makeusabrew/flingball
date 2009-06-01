@@ -483,7 +483,7 @@ int mainGame(int argc, char* args[]) {
 		*********************/
 		level->world->Step(timeStep, iterations);
 		
-		if (ball->isAtGoal() && ball->isStationary()) {
+		if (ball->isAtGoal() && ball->timeAtGoal() >= BALL_GOAL_TIME ) {
 			// hooray! level complete
 			if (level->loadNextLevel()) {
 				cout << ball->getFlings() << " " << ball->getBounces() << endl;

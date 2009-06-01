@@ -251,6 +251,14 @@ void CBall::setAtGoal(bool goal) {
 	atGoal = goal;
 }
 
+void CBall::setGoalTime() {
+	goalTime = SDL_GetTicks();
+}
+
+unsigned int CBall::timeAtGoal() {
+	return SDL_GetTicks() - goalTime;
+}
+
 bool CBall::isAtGoal() {
 	return atGoal;
 }
