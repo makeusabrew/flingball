@@ -26,19 +26,40 @@ class CLevel {
 		int getRightBound();
 		int getTopBound();
 		int getBottomBound();
-		Point getStartPoint();
+		b2Vec2 getStartPoint();
 		CPath *getPaths();
-		int getNumPaths();
+		void createWorld();
+		
+		void setLevel(int);
+		int getLevel();
+		
+		bool loadNextLevel();
+		
+		std::string getTimeSpentString();
+		
+		b2World *world;
+		
+		b2Vec2 getEndPosition();
+		
 	private:
 		int data;
 		int w;
 		int h;
-		int x;
-		int y;
-		int startX;
-		int startY;
+		int endShapeIndex;
+		
+		int cLevel;
+		int cBody;
+		
+		int timeStart;	// milliseconds
+		
+		float32 x;
+		float32 y;
+		float32 startX;
+		float32 startY;
+		float32 endX;
+		float32 endY;
 		std::string title;
-		int numPaths;
-		CPath* paths;
+		
+		b2Body *worldStaticBody;
 };
 #endif

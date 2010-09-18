@@ -13,13 +13,14 @@
 #define INC_GLOBALS_H
 #include <string>
 #include <SDL/SDL.h>
+#include "Include/Box2D.h"
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 #define SCREEN_W SCREEN_WIDTH
 #define SCREEN_H SCREEN_HEIGHT
 #define SCREEN_BPP 32
 
-#define VIEWPORT_WIDTH 700
+#define VIEWPORT_WIDTH 800
 #define VIEWPORT_HEIGHT 600
 #define VIEWPORT_W VIEWPORT_WIDTH
 #define VIEWPORT_H VIEWPORT_HEIGHT
@@ -47,6 +48,29 @@
 #define EDITOR_VIEWPORT_X 0
 #define EDITOR_VIEWPORT_Y 0
 
+const float32 DEFAULT_METRES_TO_PIXELS = 40.0f;
+const float32 MAX_METRES_TO_PIXELS = 200.0f;
+const float32 MIN_METRES_TO_PIXELS = 10.0f;
+// e.g. 1 metre = 50 pixels
+
+const float32 WORLD_BOUNDARY_FRICTION = 0.5f;
+const float32 WORLD_BOUNDARY_THICKNESS = 0.5f;
+
+const float32 BALL_ROLLING_FRICTION = 0.03f;
+
+const float32 MAX_FLING_DRAG = 180.0f;
+
+#define DATA_STATIC 0
+#define DATA_END_POINT 1
+#define DATA_BALL 2
+
+#define E_READY 0
+#define E_SHAPING 1
+#define E_MOVING 2
+
+#define BALL_GOAL_TIME 1500
+
+
 #ifndef PI
 #define PI 3.14159265
 #endif
@@ -69,14 +93,15 @@ int mainGame(int argc, char* args[]);
 bool keyPressed(SDLKey key);
 
 typedef struct{
-	int x;
-	int y;
+	float32 x;
+	float32 y;
 } Point;
 
 class CCamera;
+class CLevel;
 
 extern SDL_Surface *screen;
 extern CCamera camera;
-
+extern CLevel* level;
 
 #endif

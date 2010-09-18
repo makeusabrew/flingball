@@ -21,11 +21,23 @@ class CCamera {
 		bool translate(int, int);
 		bool translateTo(int, int);
 		
-		int x2r(int);
-		int y2r(int);
+		int x2r(float32);
+		int y2r(float32);
 		
-		int x2a(int);
-		int y2a(int);
+		float32 x2a(int);
+		float32 y2a(int);
+		
+		float32 m2p(float32);
+		float32 p2m(float32);
+		
+		void zoomIn();
+		void zoomOut();
+		
+		void zoomIn(float32);
+		void zoomOut(float32);
+		
+		float32 getZoom();
+		void setZoom(float32);
 		
 	private:
 		int x;
@@ -33,6 +45,8 @@ class CCamera {
 		
 		int w;
 		int h;
+		
+		float32 scale;
 };
 
 #endif
