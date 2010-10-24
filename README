@@ -1,1 +1,11 @@
-Flingball!
+Flingball is a simple, side-scrolling 2d game with a simple objective: fling the ball towards the "goal" of each level. The ball is flung via clicking and dragging the mouse - the velocity and angle of the fling being determined by how far (and in what direction) the mouse is dragged. The ball may only be "flung" when stationary. Basic physics such as friction, gravity and realistic bouncing angles are incorporated.
+
+Levels start off simple; small, with very few obstacles, but grow in complexity as the user progresses - later levels may involve the user having to fling the ball to accurately land on platforms, through small gaps, or over high walls.
+
+Points are awarded based on the number of "flings" taken to get to the goal, as well as the time taken to complete the level.
+
+Powerups, such as different balls types (small, large, heavy, sticky) etc are a possibility at this stage.
+
+Levels are comprised of an overarching rectangular bounding box, which can be filled with arbitrary "paths" (each path comprising of a series of "points") - a path can join up with itself to make a shape (e.g. a cube, triangle, or any polygonial shape) or may only run point-to-point to represent a platform, a bucket, or a slide, etc.
+
+More to come later. Get on board!
